@@ -12,6 +12,7 @@ import os
 # import sys
 import traceback
 import argparse
+import sys
 import datetime
 
 import util as ut
@@ -290,7 +291,7 @@ if __name__ == "__main__":
     result = {}
     vc = VexConverter()
     all_flag = False
-
+    args_tmp = sys.argv
     descri = 'vexファイルを各種野辺山用観測指示書へ変換するプログラムです。\n実行する際にはパラメータファイルが必用となるので必ず用意してください。\n詳細はGitHubを参照: https://github.com/yhamae/vexConverterForNobeyama'
     usg = 'Python3 vex_converter.py [option]\n(optionに何も設定しない場合、すべての変換が実行される。)'
 
@@ -299,12 +300,16 @@ if __name__ == "__main__":
     parser.add_argument('-n', '--ndevice', help='.ndeviceへの変換を実行する場合使用', action='store_true')
     parser.add_argument('-d', '--dat', help='.datへの変換を実行する場合使用', action='store_true')
     parser.add_argument('-t', '--tune', help='.tuneへの変換を実行する場合使用', action='store_true')
-    parser.add_argument('-f', '--filename', help='パラメータファイルの名前を指定(デフォルトでは"parameter.py"に設定)', default = 'parameter.py')
+    parser.add_argument('-f', '--filename', help='パラメータファイルの名前を指定(デフォルトでは"parameter.inp"に設定)', default = 'parameter.inp')
     parser.add_argument('-v', '--version', help='バージョンを表示', action='store_true')
-    parser.add_argument('--debag', help='For Debag(User don\'t use)', action='store_true', default = False)
+    if '--debag' in args_tmp:
+        parser.add_argument('--debag', help='For Debag(User don\'t use)', action='store_true', default = False)
     args = parser.parse_args()
 
-    vc.debag = args.debag
+    if '--debag' in args_tmp:
+        vc.debag = args.debag
+    else:
+        vc.debag = False
 
     if args.version:
         print('Ver.' + str(vc.version))
