@@ -4,7 +4,7 @@
 
 
 #---------- User name ----------#
-USER_NAME = 'vlbi3bz'
+# USER_NAME = 'vlbi3bz'
 #USER_NAME = hogehoge
 
 ask_verwrite = False
