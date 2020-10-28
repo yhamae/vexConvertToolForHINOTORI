@@ -2,6 +2,8 @@
 # Contents: ツール関係
 # Since   : Nov, 2019
 #           Yuki Hamae
+# Update  : Oct, 2020
+#           Beta版リリース
 
 import datetime
 # import sys

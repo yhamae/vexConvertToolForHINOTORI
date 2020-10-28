@@ -2,6 +2,8 @@
 # Contents: vexファイルをtuneに変換するスクリプト
 # Since   : Nov, 2019
 #           Yuki Hamae
+# Update  : Oct, 2020
+#           Beta版リリース
 
 
 import util as ut

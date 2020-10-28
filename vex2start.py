@@ -5,6 +5,8 @@
 # Update  : Nov, 2019
 #           クラス化、一部を修正
 #           Yuki Hamae
+# Update  : Oct, 2020
+#           Beta版リリース
 
 import datetime
 import sys

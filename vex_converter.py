@@ -5,7 +5,8 @@
 # Usage   : $ Python vex_converter.py [パラメータファイル名] [オプション]
 # Since   : Nov, 2019
 #           Yuki Hamae
-
+# Update  : Oct, 2020
+#           Beta版リリース
 
 from importlib import machinery
 import os
@@ -36,7 +37,7 @@ class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
         self.start_error = []
         self.prm_filename = ''
         self.vexdata = {}
-        self.version = 'α1.0'
+        self.version = 'Beta1.0'
 
     def reverse_print(self, moji):
         '''

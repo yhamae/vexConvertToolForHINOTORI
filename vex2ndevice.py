@@ -2,6 +2,8 @@
 # Contents: vexファイルをndevice(pointing含む)に変換するスクリプト
 # Since   : Nov, 2019
 #           Yuki Hamae
+# Update  : Oct, 2020
+#           Beta版リリース
 
 import re
 import math
