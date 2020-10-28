@@ -133,7 +133,7 @@ class UtilFunc():
     def chklprint2(val_name, val):
         print(pycolor.PURPLE + str(inspect.currentframe().f_back.f_lineno).zfill(4) + pycolor.END + ":    len(" + val_name + ") = " + str(len(val)))
     def chkprintstr(val):
-        print(pycolor.PURPLE + str(inspect.currentframe().f_back.f_lineno).zfill(4) + pycolor.END +    val)
+        print(pycolor.PURPLE + str(inspect.currentframe().f_back.f_lineno).zfill(4) + pycolor.END  + ":    " + val)
     def chklistprint(val_name, lists):
         print(pycolor.PURPLE + str(inspect.currentframe().f_back.f_lineno).zfill(4) + pycolor.END + ":    " + str(val_name) + ' =\n         ' + '\n         '.join(map(str, lists)))
 
