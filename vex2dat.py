@@ -11,7 +11,7 @@ import util as ut
 
 
 
-class VexToDat():
+class Vex2Dat():
     def __init__(self):
         self.datout = [None, None, None, None] * 17
         self.IFREQ = [6] * 16
@@ -37,35 +37,12 @@ class VexToDat():
                 self.rx_range_list[key] = tmp_rx_range_list[key]
                 self.first_LO[key] = tmp_first_LO[key]
 
-        # self.datout = ['VLBI',
-        #                '01,#     ,,',
-        #                '02,#     ,,',
-        #                '03,H20ch1,USB,8435.080',
-        #                '04,H20ch1,USB,8435.080',
-        #                '05,H20ch2,USB,8435.080',
-        #                '06,H20ch2,USB,8435.080',
-        #                '07,H40   ,USB,8820.539',
-        #                '08,H40   ,USB,8820.539',
-        #                '09,TZ2V  ,USB,9000.000',
-        #                '10,TZ2V  ,LSB,9000.000',
-        #                '11,TZ2V  ,LSB,9000.000',
-        #                '12,TZ2V  ,LSB,9000.000',
-        #                '13,TZ2H  ,USB,9000.000',
-        #                '14,TZ2H  ,USB,9000.000',
-        #                '15,TZ2H  ,LSB,9000.000',
-        #                '16,TZ2H  ,LSB,9000.000']
+
         self.datout = ['VLBI']
         for i in range(0, 16):
             self.datout.append(str(i + 1).zfill(2) + ',#     ,,')
-        # self.datout[4] = '04,H2Och1,USB,9564.920'
-        # self.datout[6] = '06,H2Och2,USB,9564.920'
-        # self.datout[8] = '08,H40   ,USB,9379.461'
 
 
-
-    # def cal_2nd_LO_freq(self, obs_center, freq_at_if):
-    #     second_LO = math.fabs(obs_center - freq_at_if) + 3008
-    #     return second_LO
     def cal_2nd_LO_freq(self, obs_center, rx_freq, side_band2, pflag = False):
       # USBの場合LOの周波数増やすとピークは周波数低い方向にしふと
         if not pflag:
@@ -78,20 +55,17 @@ class VexToDat():
                 print('    2ndLO = 6000 + 3000 + ' + str(obs_center) + ' - ' + str(rx_freq) + ' = ' + str(Decimal(str(second_LO)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)) + 'MHz')
             else:
                 print('    2ndLO = 6000 + 3000 + ' + '8 + ' + str(obs_center) + ' - ' + str(rx_freq) + ' = ' + str(Decimal(str(second_LO)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)) + 'MHz')
-            # if self.debag:
-                # ut.UtilFunc.chkprintstr('F_2nd = 6000 + 3000 + ' + str(sign) + ' × 8 + ' + str(obs_center) + ' - ' + str(rx_freq) + ' = ' + str(second_LO))
+
+
         if side_band2 == 'LSB':
             second_LO = 6000 + 3000 + sign * 8 - obs_center + rx_freq
             if pflag:
                 print('    2ndLO = 6000 + 3000 + ' - str(obs_center) + ' + ' + str(rx_freq) + ' = ' + str(Decimal(str(second_LO)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)) + 'MHz')
             else:
                 print('    2ndLO = 6000 + 3000 + ' + '8 - ' + str(obs_center) + ' + ' + str(rx_freq) + ' = ' + str(Decimal(str(second_LO)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)) + 'MHz')
-            # if self.debag:
-                # ut.UtilFunc.chkprintstr('F_2nd = 6000 + 3000 + ' + str(sign) + ' × 8 - ' + str(obs_center) + ' + ' + str(rx_freq) + ' = ' + str(second_LO))
+            
+
         return second_LO
-
-
-    # def make_dat(self, self.array_list):
 
 
     def convert_vex_to_dat(self):
@@ -128,8 +102,8 @@ class VexToDat():
                 else:
                     print(ut.pycolor.RED + 'A' + str(i + 1).zfill(2) + ut.pycolor.END + ' ' + lists[0] + ', ' + lists[6][1])
 
-                # secont_lo_freq = str(VexToDat.cal_2nd_LO_freq(self, f, first_lo * 1000, sideband1, sideband2))
-                secont_lo_freq = str(VexToDat.cal_2nd_LO_freq(self, f, first_lo * 1000, lists[6][1], pflag = (i + 1 in self.pointing_array_num.values())))
+                # secont_lo_freq = str(Vex2Dat.cal_2nd_LO_freq(self, f, first_lo * 1000, sideband1, sideband2))
+                secont_lo_freq = str(Vex2Dat.cal_2nd_LO_freq(self, f, first_lo * 1000, lists[6][1], pflag = (i + 1 in self.pointing_array_num.values())))
 
                 if lists[0] in self.change_name_prm.keys():
                     rx_name = self.change_name_prm[lists[0]]

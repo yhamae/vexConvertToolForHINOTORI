@@ -69,7 +69,6 @@ vexファイルから変換する際に、.start、.device、.datについては
 ### 必ず設定しなくてはならないパラメータ  
 |パラメータ名          |説明 |Note |
 |--------------------|----|-----|
-|USER_NAME           |USER_NAMEを変更する | |
 |vex_file_nam        |vexファイルの名前を指定する | |
 |start_time_flag     |観測開始時間を指定する |※a |
 |TIME_MOVE_ANTENNA   |1SCAN目にアンテナを動かす時間 | |

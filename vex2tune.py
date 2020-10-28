@@ -11,7 +11,7 @@ import util as ut
 
 
 
-class VexToTune():
+class Vex2Tune():
     def __init__(self):
         self.tune_file_name = ''
         self.tune_file = []

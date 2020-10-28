@@ -15,7 +15,7 @@ import util as ut
 
 
 
-class VexToStart():
+class Vex2Start():
     def __init__(self):
         self.vex_fname = ''
         self.USER_NAME = ''
@@ -76,7 +76,7 @@ class VexToStart():
 
     def convert_vex_to_start(self):
 
-        # print(VexToStart.__get_pointing_startfile(self, self.pointing_start_file_path + self.PROJECT_NAME + self.pointing_start_file))
+        # print(Vex2Start.__get_pointing_startfile(self, self.pointing_start_file_path + self.PROJECT_NAME + self.pointing_start_file))
         vex_data = open(self.vex_file_name, "r")
         self.datalist = vex_data.readlines()
         # print(self.vex_file_name)
@@ -1436,7 +1436,7 @@ class VexToStart():
 
 
 if __name__ == "__main__":
-    vs = VexToStart()
+    vs = Vex2Start()
     vs.prm_filename = 'parm.py'
     vs.get_var()
     vs.vex2start()

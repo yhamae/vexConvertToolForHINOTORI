@@ -17,21 +17,21 @@ import datetime
 import getpass
 
 import util as ut
-from vex_to_start import VexToStart
-from vex_to_ndevice import VexToNdevice
-from vex_to_dat import VexToDat
-from vex_to_tune import VexToTune
+from vex2start import Vex2Start
+from vex2ndevice import Vex2Ndevice
+from vex2dat import Vex2Dat
+from vex2tune import Vex2Tune
 
 
-class VexConverter(VexToStart, VexToNdevice, VexToDat, VexToTune):
+class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
     '''
     vexファイルをstartとndevice、tune、datに変換する
     '''
     def __init__(self):
-        VexToStart.__init__(self)
-        VexToNdevice.__init__(self)
-        VexToTune.__init__(self)
-        VexToDat.__init__(self)
+        Vex2Start.__init__(self)
+        Vex2Ndevice.__init__(self)
+        Vex2Tune.__init__(self)
+        Vex2Dat.__init__(self)
         self.common_error = []
         self.start_error = []
         self.prm_filename = ''
@@ -296,7 +296,7 @@ if __name__ == "__main__":
     vc = VexConverter()
     all_flag = False
     args_tmp = sys.argv
-    descri = 'vexファイルを各種野辺山用観測指示書へ変換するプログラムです。\n実行する際にはパラメータファイルが必用となるので必ず用意してください。\n詳細はGitHubを参照: https://github.com/yhamae/vexConverterForNobeyama'
+    descri = 'vexファイルを各種野辺山用観測指示書へ変換するプログラムです。\n実行する際にはパラメータファイルが必用となるので必ず用意してください。\n詳細はGitHubを参照: https://github.com/yhamae/vexConvertToolForHINOTORI'
     usg = 'Python3 vex_converter.py [option]\n(optionに何も設定しない場合、すべての変換が実行される。)'
 
     parser = argparse.ArgumentParser(prog='vex_converter', usage=usg, description=descri, add_help=True)
@@ -345,6 +345,7 @@ if __name__ == "__main__":
         result['get parameter(dat)'] = vc.get_dat_var()
         vc.reverse_print('Convert .vex to .dat')
         result['Convert .vex to .dat'] = vc.convert_vex_to_dat()
+    # Tuneファイルの作成が不要になったためコメントアウト
     # if args.tune or all_flag:
     #     if not args.start and not all_flag:
     #         result['get parameter(start)'] = vc.get_start_var()

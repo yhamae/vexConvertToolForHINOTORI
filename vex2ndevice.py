@@ -14,7 +14,7 @@ import util as ut
 
 
 
-class VexToNdevice:
+class Vex2Ndevice:
     def __init__(self):
         self.device_fname = ""
         self.station_name = "Ny"
@@ -648,7 +648,7 @@ class VexToNdevice:
         # 周波数のチェックと分割
         
         # add_list = []
-        new_freq_list = VexToNdevice.__set_h40(self, freq_list)
+        new_freq_list = Vex2Ndevice.__set_h40(self, freq_list)
         pop_lis = []
         for j, lists in enumerate(freq_list):
             # print(self.rx_range_list)
@@ -1197,31 +1197,31 @@ class VexToNdevice:
         '''
         vexファイルを変換
         '''
-        use_mode                                            = VexToNdevice.__read_sched(self)
-        mode_bindex, mode_eindex, FreqMode, IFMode, BBCMode = VexToNdevice.__read_mode(self)
-        unused_variable                                     = VexToNdevice.__check_sched_and_mode(self, mode_bindex, mode_eindex, use_mode, FreqMode, IFMode)
-        freq_BBC, freq_val, freq_pol, freq_sb, freq_range   = VexToNdevice.__read_freq(self, FreqMode)
-        BBC_comb                                            = VexToNdevice.__read_bbc(self, BBCMode)
-        IF_comb                                             = VexToNdevice.__read_if(self, IFMode)
-        freq_BBC                                            = VexToNdevice.__overwrite_bbc_with_if(self, BBC_comb, freq_BBC, IF_comb)
-        comb_rx_freq, rx_sb_name, num_of_rx    = VexToNdevice.__dist_rx_and_pol(self, freq_val, freq_pol, freq_sb, freq_BBC, freq_range)
-        # rx_sb_name                                    = VexToNdevice.__overwrite_sideband(self, rx_sb_name)
-        # rx_sb_name                                           = VexToNdevice.__adjust_bandwidth(self, rx_sb_name)
-        # freq_list                                           = VexToNdevice.__set_freq(self, rx_sb_name)
+        use_mode                                            = Vex2Ndevice.__read_sched(self)
+        mode_bindex, mode_eindex, FreqMode, IFMode, BBCMode = Vex2Ndevice.__read_mode(self)
+        unused_variable                                     = Vex2Ndevice.__check_sched_and_mode(self, mode_bindex, mode_eindex, use_mode, FreqMode, IFMode)
+        freq_BBC, freq_val, freq_pol, freq_sb, freq_range   = Vex2Ndevice.__read_freq(self, FreqMode)
+        BBC_comb                                            = Vex2Ndevice.__read_bbc(self, BBCMode)
+        IF_comb                                             = Vex2Ndevice.__read_if(self, IFMode)
+        freq_BBC                                            = Vex2Ndevice.__overwrite_bbc_with_if(self, BBC_comb, freq_BBC, IF_comb)
+        comb_rx_freq, rx_sb_name, num_of_rx    = Vex2Ndevice.__dist_rx_and_pol(self, freq_val, freq_pol, freq_sb, freq_BBC, freq_range)
+        # rx_sb_name                                    = Vex2Ndevice.__overwrite_sideband(self, rx_sb_name)
+        # rx_sb_name                                           = Vex2Ndevice.__adjust_bandwidth(self, rx_sb_name)
+        # freq_list                                           = Vex2Ndevice.__set_freq(self, rx_sb_name)
         freq_list = rx_sb_name
         # ut.UtilFunc.chkprint(freq_list)
-        freq_list                                           = VexToNdevice.__adjust_bandwidth(self, freq_list)
+        freq_list                                           = Vex2Ndevice.__adjust_bandwidth(self, freq_list)
 
-        # freq_list                                           = VexToNdevice.__adjust_lo_freq(self, freq_list)
-        # freq_list                                           = VexToNdevice.__change_sb_name(self, freq_list)
-        use_polarized_comb                                  = VexToNdevice.__check_type(self, num_of_rx, freq_list)
-        self.rxlist, self.array_list                        = VexToNdevice.__sort_array(self, use_polarized_comb)
-        self.array_list                                     = VexToNdevice.__set_rest_freq(self, self.array_list)
-        # self.array_list                            = VexToNdevice.__overwrite_freqsetting(self, self.array_list, self.rxlist)
-        self.array_list                                     = VexToNdevice.__copy_low2high(self, self.array_list)
-        self.array_list                                     = VexToNdevice.__set_pfreq(self, self.array_list, self.rxlist)
-        unused_variable                                     = VexToNdevice.__print_rx_list(self, self.rxlist, self.array_list)
-        out_data                                            = VexToNdevice.__make_export_line(self, self.rxlist, comb_rx_freq, self.array_list)
+        # freq_list                                           = Vex2Ndevice.__adjust_lo_freq(self, freq_list)
+        # freq_list                                           = Vex2Ndevice.__change_sb_name(self, freq_list)
+        use_polarized_comb                                  = Vex2Ndevice.__check_type(self, num_of_rx, freq_list)
+        self.rxlist, self.array_list                        = Vex2Ndevice.__sort_array(self, use_polarized_comb)
+        self.array_list                                     = Vex2Ndevice.__set_rest_freq(self, self.array_list)
+        # self.array_list                            = Vex2Ndevice.__overwrite_freqsetting(self, self.array_list, self.rxlist)
+        self.array_list                                     = Vex2Ndevice.__copy_low2high(self, self.array_list)
+        self.array_list                                     = Vex2Ndevice.__set_pfreq(self, self.array_list, self.rxlist)
+        unused_variable                                     = Vex2Ndevice.__print_rx_list(self, self.rxlist, self.array_list)
+        out_data                                            = Vex2Ndevice.__make_export_line(self, self.rxlist, comb_rx_freq, self.array_list)
         unused_variable                                     = ut.UtilFunc.ask_and_write(self.device_fname, out_data, self.device_file_flag, self.yes)
 
         del unused_variable
