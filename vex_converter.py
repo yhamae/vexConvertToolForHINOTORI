@@ -14,6 +14,7 @@ import traceback
 import argparse
 import sys
 import datetime
+import getpass
 
 import util as ut
 from vex_to_start import VexToStart
@@ -84,7 +85,10 @@ class VexConverter(VexToStart, VexToNdevice, VexToDat, VexToTune):
             traceback.print_exc()
             exit()
 
-        if hasattr(prm, 'USER_NAME'): self.USER_NAME = prm.USER_NAME 
+        if hasattr(prm, 'USER_NAME'):
+            self.USER_NAME = prm.USER_NAME 
+        else:
+            self.USER_NAME = getpass.getuser()
         if hasattr(prm, 'obs_name'): self.obs_name = prm.obs_name         
         if hasattr(prm, 'PROJECT_NAME'): self.PROJECT_NAME = prm.PROJECT_NAME
         if hasattr(prm, 'pointing_start_file_path'): self.pointing_start_file_path = prm.pointing_start_file_path
