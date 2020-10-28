@@ -43,7 +43,7 @@ class VexToNdevice:
                               "TZ2H": ["TZ2Hlp", "TZ2Rcp", "TZ2Hcp"]}
         self.rx_range = {"H22": 10, "H40": 10, "Z45": 10, "TZ2": 10}
         # self.rx_width = {"H22": 1024, "H40": 2048, "Z45": 1024, "TZ2": 2048}
-        self.rx_width = {"H22": 2048, "H40": 2048, "Z45": 2048, "TZ2": 2048}
+        # self.rx_width = {"H22": 2048, "H40": 2048, "Z45": 2048, "TZ2": 2048}
         self.array_num = {"H22R": 3, 
                           "H22L": 5, 
                           "H40":    7, 
@@ -595,7 +595,8 @@ class VexToNdevice:
             # if  1024 * self.rx_range[tmp_rx_sb_name[i][5]] >= math.fabs(tmp_rx_sb_name[i][2][0] - freq_list[freq_list_index][2][1]) and freq_list[freq_list_index][0:2] == tmp_rx_sb_name[i][0:2] and math.fabs(tmp_rx_sb_name[i][2][1] - freq_list[freq_list_index][2][0]) < 1024:
             
             # if  freq_list[freq_list_index][0:2] == tmp_rx_sb_name[i][0:2] and math.fabs(tmp_rx_sb_name[i][2][1] - freq_list[freq_list_index][2][0]) <= 1024:
-            if  freq_list[freq_list_index][0:2] == tmp_rx_sb_name[i][0:2] and math.fabs(tmp_rx_sb_name[i][2][1] - freq_list[freq_list_index][2][0]) <= 2048:
+            # if  freq_list[freq_list_index][0:2] == tmp_rx_sb_name[i][0:2] and math.fabs(tmp_rx_sb_name[i][2][1] - freq_list[freq_list_index][2][0]) <= 2048:
+            if  freq_list[freq_list_index][0:2] == tmp_rx_sb_name[i][0:2]:
                 if self.debag: 
                     ut.UtilFunc.chkprint2('tmp_rx_sb_name[' + str(i - 1) + '][2]', tmp_rx_sb_name[i - 1][2])
                     ut.UtilFunc.chkprint2('tmp_rx_sb_name[' + str(i) + '][2]', tmp_rx_sb_name[i][2])
@@ -618,6 +619,30 @@ class VexToNdevice:
         if self.debag:
             ut.UtilFunc.chklistprint('freq_list', freq_list)
             ut.UtilFunc.chkprint(self.rx_range_list)
+        # tmp_rx_sb_name = 
+        tmplst = []
+        count = 0
+        for i, lst in enumerate(copy.deepcopy(freq_list)):
+            count += 1
+            if lst[4] > 2048:
+                a = int(lst[4] / 2048) + 1
+                range_ini = lst[2][0]
+                for j in range(0, a):
+                    tmp_lst = copy.deepcopy(lst)
+                    if self.debag: ut.UtilFunc.chkprint(tmp_lst)
+                    tmp_width = lst[4] / a
+                    tmp_lst[4] = tmp_width
+                    tmp_lst[2] = [range_ini, range_ini + tmp_width]
+                    tmplst.append(tmp_lst)
+                    if self.debag: ut.UtilFunc.chkprint(j, a, tmp_width, range_ini, tmp_lst)
+                    range_ini += tmp_width
+                    
+            else:
+                tmplst.append(lst)
+        freq_list = copy.deepcopy(tmplst)
+        if self.debag:
+            ut.UtilFunc.chklistprint('tmplst', tmplst)
+            ut.UtilFunc.chklistprint('freq_list', freq_list)
             # ut.UtilFunc.chklprint(freq_list)
 
         # 周波数のチェックと分割
@@ -630,7 +655,7 @@ class VexToNdevice:
             # print(self.rx_range_list)
             try:
                 # print(lists)
-                n = math.fabs(lists[2][1] - lists[2][0]) / self.rx_width[lists[5]]
+                n = math.fabs(lists[2][1] - lists[2][0]) / 2048
                 # print(self.rx_width[lists[5]])
             except KeyError as e:
                 ut.UtilFunc.print_err_msg(True, e, "偏波の設定方法が間違っています", "vexファイルの周波数設定の項目で偏波が設定されているか確認してください")
@@ -965,7 +990,7 @@ class VexToNdevice:
                 for i in range(1, tmp_array_num[keys]):
                     j = self.array_num[keys + '-' + str(i + 1)] - 1
                     if tmp_lis[j][0] == None:
-                        print('j=' + str(j))
+                        # print('j=' + str(j))
                         tmp_lis[j] = tmp_lis[self.array_num[keys + '-1'] - 1]
         # print(tmp_lis)
         return tmp_lis
@@ -980,7 +1005,7 @@ class VexToNdevice:
                     tmp = s
                     index_tmp = i
                     break
-            print(self.pointing_array_num[key])
+            # print(self.pointing_array_num[key])
 
             arraylst[self.pointing_array_num[key] - 1] = [key, 'USB', tmp[2], self.pfreq[key] * 1000, i, key, [None, 'USB', None], 0, self.pfreq[key]]
             # if self.debag: ut.UtilFunc.chkprint([key, 'USB-L', tmp[2], None, i, key, [None, 'USB', None], None, self.pfreq[key]])
@@ -1003,7 +1028,7 @@ class VexToNdevice:
             print("Array  Freqency[GHz]  rx  Band  VexFileFreq  index　　 LO Set")
         else:
             # print('-------------------------------------------------')
-            print("Array  Freqency[GHz]  rx  Band  rx_No")
+            print("Array 1stLO[GHz] rxname  Band rx_No CenterFreq[MHz]")
         for i, lists in enumerate(array_freq_rx_list):
             # print(lists)
             if self.debag:
@@ -1015,9 +1040,17 @@ class VexToNdevice:
             else:
                 if lists[4] == -1:
                     tmp_num = 'None'
+                    tmp_cent = 'None'
+                    first_LO = 'None'
                 else:
                     tmp_num = lists[4] + 1
-                print('{0:>5}  {1:>13.10}  {2:>8}  {3:>4}        {4:>5}'.format(i + 1, str(lists[2]),str(lists[0]), str(lists[1]), tmp_num))
+                    tmp_cent = lists[3] + lists[7] / 2
+                    first_LO = lists[2] - 6
+                if i + 1 in self.pointing_array_num.values():
+                    print('   {0} {1:>10.10} {2:>6}  {3:>4} {4:>5} {5}'.format(ut.pycolor.RED + str(i + 1).zfill(2) + ut.pycolor.END, str(first_LO),str(lists[0]), str(lists[1]), tmp_num, str(tmp_cent)))
+                else:
+                    print('   {0} {1:>10.10} {2:>6}  {3:>4} {4:>5} {5}'.format(str(i + 1).zfill(2), str(first_LO),str(lists[0]), str(lists[1]), tmp_num, str(tmp_cent)))
+        print('(' + ut.pycolor.RED + 'Red array number' + ut.pycolor.END + ' is Pointing)')
         if self.debag:
             print('------------------')
             for i, lists in enumerate(array_freq_rx_list):
@@ -1176,14 +1209,13 @@ class VexToNdevice:
         # rx_sb_name                                           = VexToNdevice.__adjust_bandwidth(self, rx_sb_name)
         # freq_list                                           = VexToNdevice.__set_freq(self, rx_sb_name)
         freq_list = rx_sb_name
-
         # ut.UtilFunc.chkprint(freq_list)
         freq_list                                           = VexToNdevice.__adjust_bandwidth(self, freq_list)
 
         # freq_list                                           = VexToNdevice.__adjust_lo_freq(self, freq_list)
         # freq_list                                           = VexToNdevice.__change_sb_name(self, freq_list)
         use_polarized_comb                                  = VexToNdevice.__check_type(self, num_of_rx, freq_list)
-        self.rxlist, self.array_list                            = VexToNdevice.__sort_array(self, use_polarized_comb)
+        self.rxlist, self.array_list                        = VexToNdevice.__sort_array(self, use_polarized_comb)
         self.array_list                                     = VexToNdevice.__set_rest_freq(self, self.array_list)
         # self.array_list                            = VexToNdevice.__overwrite_freqsetting(self, self.array_list, self.rxlist)
         self.array_list                                     = VexToNdevice.__copy_low2high(self, self.array_list)
