@@ -74,12 +74,20 @@ class VexToDat():
             sign = 0
         if side_band2 == 'USB':
             second_LO = 6000 + 3000 + sign * 8 + obs_center - rx_freq
-            if self.debag:
-                ut.UtilFunc.chkprintstr('F_2nd = 6000 + 3000 + (' + str(sign) + ' × 8 + ' + str(obs_center) + ' - ' + str(rx_freq) + ') = ' + str(second_LO))
+            if pflag:
+                print('    2ndLO = 6000 + 3000 + ' + str(obs_center) + ' - ' + str(rx_freq) + ' = ' + str(Decimal(str(second_LO)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)) + 'MHz')
+            else:
+                print('    2ndLO = 6000 + 3000 + ' + '8 + ' + str(obs_center) + ' - ' + str(rx_freq) + ' = ' + str(Decimal(str(second_LO)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)) + 'MHz')
+            # if self.debag:
+                # ut.UtilFunc.chkprintstr('F_2nd = 6000 + 3000 + ' + str(sign) + ' × 8 + ' + str(obs_center) + ' - ' + str(rx_freq) + ' = ' + str(second_LO))
         if side_band2 == 'LSB':
             second_LO = 6000 + 3000 + sign * 8 - obs_center + rx_freq
-            if self.debag:
-                ut.UtilFunc.chkprintstr('F_2nd = 6000 + 3000 - (' + str(sign) + ' × 8 + ' + str(obs_center) + ' - ' + str(rx_freq) + ') = ' + str(second_LO))
+            if pflag:
+                print('    2ndLO = 6000 + 3000 + ' - str(obs_center) + ' + ' + str(rx_freq) + ' = ' + str(Decimal(str(second_LO)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)) + 'MHz')
+            else:
+                print('    2ndLO = 6000 + 3000 + ' + '8 - ' + str(obs_center) + ' + ' + str(rx_freq) + ' = ' + str(Decimal(str(second_LO)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)) + 'MHz')
+            # if self.debag:
+                # ut.UtilFunc.chkprintstr('F_2nd = 6000 + 3000 + ' + str(sign) + ' × 8 - ' + str(obs_center) + ' + ' + str(rx_freq) + ' = ' + str(second_LO))
         return second_LO
 
 
@@ -96,7 +104,7 @@ class VexToDat():
             max_leng = 6
 
         for i, lists in enumerate(self.array_list):
-            if i == 0 or i == 1:
+            if i == 0:
                 continue
             if lists[4] != -1:
                 # print(self.rx_range_list[lists[0]])
@@ -110,11 +118,15 @@ class VexToDat():
                 #     sideband = 'USB'
                 # print(lists[2])
                 first_lo = self.rxlist[lists[4]][2]
-                if self.debag:
-                    ut.UtilFunc.chkprint(first_lo)
-                    ut.UtilFunc.chkprint(f)
-                    ut.UtilFunc.chkprintstr('f = ' + str(lists[3]) + " + "  + str(lists[7]) + ' / 2')
-
+                # if self.debag:
+                    # ut.UtilFunc.chkprint(first_lo)
+                    # ut.UtilFunc.chkprint(f)
+                    # ut.UtilFunc.chkprintstr('f = ' + str(lists[3]) + " + "  + str(lists[7]) + ' / 2')
+                    # print()
+                if i + 1 in self.pointing_array_num.values():
+                    print(ut.pycolor.RED + 'A' + str(i + 1).zfill(2) + ut.pycolor.END + ' ' + lists[0] + ', ' + lists[6][1] + ', POINTING')
+                else:
+                    print(ut.pycolor.RED + 'A' + str(i + 1).zfill(2) + ut.pycolor.END + ' ' + lists[0] + ', ' + lists[6][1])
 
                 # secont_lo_freq = str(VexToDat.cal_2nd_LO_freq(self, f, first_lo * 1000, sideband1, sideband2))
                 secont_lo_freq = str(VexToDat.cal_2nd_LO_freq(self, f, first_lo * 1000, lists[6][1], pflag = (i + 1 in self.pointing_array_num.values())))
@@ -128,6 +140,9 @@ class VexToDat():
 
                 # if float(secont_lo_freq) > self.second_LO_max:
                 #     ut.UtilFunc.print_err_msg(False, '', "2nd L.O.の周波数が11GHｚを超えました", "2nd L.O.の周波数が11GHz以下になるように設定を変更してください")
+            else:
+                print(ut.pycolor.RED + 'A' + str(i + 1).zfill(2) + ut.pycolor.END + ' N/A, N/A')
+                print('    2ndLO = N/A')
             # else:
             #     self.datout[i + 1] = [str(i + 1).zfill(2), '#'.ljust(max_leng),'', '']
         write_line = self.datout
@@ -135,9 +150,9 @@ class VexToDat():
         # for lists in self.datout[1:]:
         #     write_line.append(,.join(map(str, lists)))
         # print(write_line)
-        print("-" * 20)
-        print('\n'.join(write_line))
-        print("-" * 20)
+        # print("-" * 20)
+        # print('\n'.join(write_line))
+        # print("-" * 20)
 
 
         ut.UtilFunc.ask_and_write(self.dat_filename, write_line, self.dat_file_flag, self.yes)
