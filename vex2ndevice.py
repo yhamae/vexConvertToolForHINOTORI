@@ -1156,7 +1156,7 @@ class Vex2Ndevice:
 
         for i in range(0, 32):
             if i < len(array_freq_rx_list) and array_freq_rx_list[i][4] != -1:
-                out_data.append('RSFREQ' + str(i + 1).zfill(2) + '=' + str(Decimal(str(array_freq_rx_list[i][3] * 1E-3)).quantize(Decimal('0.0000001'), rounding=ROUND_HALF_UP)))
+                out_data.append('RSFREQ' + str(i + 1).zfill(2) + '=' + str(Decimal(str((array_freq_rx_list[i][3] + array_freq_rx_list[i][7] / 2) * 1E-3)).quantize(Decimal('0.0000001'), rounding=ROUND_HALF_UP)))
             else:
                 out_data.append('RSFREQ' + str(i + 1).zfill(2) + '=')
 
