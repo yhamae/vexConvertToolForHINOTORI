@@ -1010,6 +1010,7 @@ class Vex2Ndevice:
             # print(self.pointing_array_num[key])
 
             arraylst[self.pointing_array_num[key] - 1] = [key, 'USB', tmp[2], self.pfreq[key] * 1000, i, key, [None, 'USB', None], 0, self.pfreq[key]]
+            # arraylst[self.pointing_array_num[key] - 1] = [key, 'USB', tmp[2], self.pfreq[key] * 1000, i, key, [None, 'LSB', None], 0, self.pfreq[key]]
             # if self.debag: ut.UtilFunc.chkprint([key, 'USB-L', tmp[2], None, i, key, [None, 'USB', None], None, self.pfreq[key]])
 
         return arraylst
@@ -1155,7 +1156,7 @@ class Vex2Ndevice:
 
         for i in range(0, 32):
             if i < len(array_freq_rx_list) and array_freq_rx_list[i][4] != -1:
-                out_data.append('RSFREQ' + str(i + 1).zfill(2) + '=' + str(array_freq_rx_list[i][8]))
+                out_data.append('RSFREQ' + str(i + 1).zfill(2) + '=' + str(Decimal(str(array_freq_rx_list[i][3] * 1E-3)).quantize(Decimal('0.0000001'), rounding=ROUND_HALF_UP)))
             else:
                 out_data.append('RSFREQ' + str(i + 1).zfill(2) + '=')
 
