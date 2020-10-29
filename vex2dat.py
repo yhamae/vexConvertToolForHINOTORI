@@ -43,6 +43,7 @@ class Vex2Dat():
         self.datout = ['VLBI']
         for i in range(0, 16):
             self.datout.append(str(i + 1).zfill(2) + ',#     ,,')
+        # self.datout[1] = str(i + 1).zfill(2) + ',' +  str(’H20ch1).ljust(max_leng) + ',' +  lists[6][1] + ',' +  str(Decimal(str(secont_lo_freq)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
 
 
     def cal_2nd_LO_freq(self, obs_center, rx_freq, side_band2, pflag = False):
@@ -80,8 +81,8 @@ class Vex2Dat():
             max_leng = 6
 
         for i, lists in enumerate(self.array_list):
-            if i == 0:
-                continue
+            # if i == 0:
+            #     continue
             if lists[4] != -1:
                 # print(self.rx_range_list[lists[0]])
                 f = lists[3] + lists[7] / 2

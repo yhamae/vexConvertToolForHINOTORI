@@ -1227,6 +1227,9 @@ class Vex2Ndevice:
         out_data                                            = Vex2Ndevice.__make_export_line(self, self.rxlist, comb_rx_freq, self.array_list)
         unused_variable                                     = ut.UtilFunc.ask_and_write(self.device_fname, out_data, self.device_file_flag, self.yes)
 
+        self.array_list[0] = self.array_list[3]
+        self.array_list[1] = self.array_list[3]
+
         del unused_variable
 
 
