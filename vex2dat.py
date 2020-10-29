@@ -100,13 +100,13 @@ class Vex2Dat():
                     # ut.UtilFunc.chkprint(f)
                     # ut.UtilFunc.chkprintstr('f = ' + str(lists[3]) + " + "  + str(lists[7]) + ' / 2')
                     # print()
-                if i + 1 in self.pointing_array_num.values():
+                if i + 1 in self.pointing_array_num.values() or i + 1 == 1 or i + 1 == 2:
                     print(ut.pycolor.RED + 'A' + str(i + 1).zfill(2) + ut.pycolor.END + ' ' + lists[0] + ', ' + lists[6][1] + ', POINTING')
                 else:
                     print(ut.pycolor.RED + 'A' + str(i + 1).zfill(2) + ut.pycolor.END + ' ' + lists[0] + ', ' + lists[6][1])
 
                 # secont_lo_freq = str(Vex2Dat.cal_2nd_LO_freq(self, f, first_lo * 1000, sideband1, sideband2))
-                secont_lo_freq = str(Vex2Dat.cal_2nd_LO_freq(self, f, first_lo * 1000, lists[6][1], pflag = (i + 1 in self.pointing_array_num.values())))
+                secont_lo_freq = str(Vex2Dat.cal_2nd_LO_freq(self, f, first_lo * 1000, lists[6][1], pflag = (i + 1 in self.pointing_array_num.values() or i + 1 == 1 or i + 1 == 2)))
 
                 if lists[0] in self.change_name_prm.keys():
                     rx_name = self.change_name_prm[lists[0]]

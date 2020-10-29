@@ -49,10 +49,10 @@ class Vex2Ndevice:
         self.array_num = {"H22R": 3, 
                           "H22L": 5, 
                           "H40":    7, 
-                          "TZ2H-1": 11, 
-                          "TZ2V-1": 15, 
-                          "TZ2H-2": 12, 
-                          "TZ2V-2": 16, 
+                          "TZ2H-1": 15, 
+                          "TZ2V-1": 11, 
+                          "TZ2H-2": 16, 
+                          "TZ2V-2": 12, 
                           "Z45V-1": 16, 
                           "Z45H-1": 11, 
                           "Z45V-2": 10, 
@@ -61,8 +61,8 @@ class Vex2Ndevice:
                                    "H22L": 22.23508, 
                                    "H40":  42.820539}
         self.pointing_array_num = {"H22R": 4, 
-                     "H22L": 6, 
-                     "H40":  8}
+                                   "H22L": 6, 
+                                   "H40":  8}
         # self.pointing_array_num = {}
         
         self.att = [5] * self.max_array_leng
