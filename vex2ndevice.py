@@ -861,14 +861,14 @@ class Vex2Ndevice:
 
             tmp_freq = 1000 * self.static_freq[dcount]
 
-            if not [key.split('-')[0], use_polarized_comb[key][0], tmp_freq / 1000] in rxlist:
+            if not [key.split('-')[0], use_polarized_comb[key][2][1], tmp_freq / 1000] in rxlist:
                 # print([key.split('-')[0], use_polarized_comb[key][0]])
-                rxlist.append([key.split('-')[0], use_polarized_comb[key][0], tmp_freq / 1000])
+                rxlist.append([key.split('-')[0], use_polarized_comb[key][2][1], tmp_freq / 1000])
 
-            num = rxlist.index([key.split('-')[0], use_polarized_comb[key][0], tmp_freq / 1000]) 
+            num = rxlist.index([key.split('-')[0], use_polarized_comb[key][2][1], tmp_freq / 1000]) 
 
 
-            array_freq_rx_list[self.array_num[key] - 1] = copy.copy([key.split('-')[0], use_polarized_comb[key][0], tmp_freq / 1000, use_polarized_comb[key][1], num, key, use_polarized_comb[key][2], use_polarized_comb[key][3]])
+            array_freq_rx_list[self.array_num[key] - 1] = copy.copy([key.split('-')[0], use_polarized_comb[key][2][1], tmp_freq / 1000, use_polarized_comb[key][1], num, key, use_polarized_comb[key][2], use_polarized_comb[key][3]])
 
         tmp_vlbi_array_freq_rx_list = []
         if self.debag:
@@ -1083,7 +1083,10 @@ class Vex2Ndevice:
         for i in range(0, 8):
             if i < len(rxlist):
                 # out_data.append('IF' + str(i + 1).zfill(2) + '=' + rxlist[i][1])
-                out_data.append('IF' + str(i + 1).zfill(2) + '=USB-L')
+                if rxlist[i][1] == 'USB':
+                    out_data.append('IF' + str(i + 1).zfill(2) + '=USB-L')
+                elif rxlist[i][1] == 'LSB':
+                    out_data.append('IF' + str(i + 1).zfill(2) + '=LSB-L')
             else:
                 out_data.append('IF' + str(i + 1).zfill(2) + '=')
         # TRFREQ
