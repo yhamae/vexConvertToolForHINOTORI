@@ -469,111 +469,122 @@ class Vex2Start():
         #  write OBSTABLE
         #-------------------------------------------------#
         self.startfile.append("#-------- OBSTABLE Information Table --------")
-        if self.startfile_mode['pointing']:
-            self.startfile.append("% OBSERVER=" + self.USER_NAME + "")
-            #self.startfile.append("% GROUP=" + os.getlogin() + "")
-            self.startfile.append("% GROUP=" + self.USER_NAME + "")
-            #self.startfile.append("% PROJECT=vlbi")
-            self.startfile.append("% PROJECT=" + self.PROJECT_NAME + "")
-            self.startfile.append("% OBS_NAME=" + self.obs_name + "")
-
-            # self.startfile.append('% information of .device')
-            self.startfile.append('% CHAPTER=')
-            self.startfile.append('% SRC_NAME=' + SOURCE_LIST[SOURCE_NUMBER][0])
-            self.startfile.append('% SRC_COMMENT=' + SOURCE_LIST[SOURCE_NUMBER][0])
-            self.startfile.append('% SW_MODE=POS')
-            self.startfile.append('% POS_ANGLE=0')
-            self.startfile.append('% EPOCH=J2000')
-            self.startfile.append('% VELO=24000.0')
-            self.startfile.append('% VDEF=RAD')
-            self.startfile.append('% VREF=LSR')
-            if self.startfile_mode['pointing']:
-                self.startfile.append('% OBS_MODE=POINTING')
-            if self.startfile_mode['vlbi']:
-                self.startfile.append('% OBS_MODE=NORMAL')
-            if self.startfile_mode['pointing']:
-                self.startfile.append('% SCAN_TYPE=5POINTS ')
-            if self.startfile_mode['vlbi']:
-                self.startfile.append('% SCAN_TYPE=CENTER ')
-            for i, s in enumerate(self.array_list):
-                if s[0] != None:
-                    tmp_val = '{:E}'.format(s[2] * 1E+9).split('E+')
-                    tmp = str(float(tmp_val[0])) + 'E' + tmp_val[1]
-                    self.startfile.append('% OBS_FREQ' + str(i + 1) + '=' + tmp)
-                else:
-                    self.startfile.append('% OBS_FREQ' + str(i + 1) + '=0') 
-            for i in range(16, 24):
-                self.startfile.append('% OBS_FREQ' + str(i + 1) + '=0') 
+        # if self.startfile_mode['pointing']:
 
 
-            for i, s in enumerate(self.array_list):
-                if s[0] != None:
-                    tmp_val = '{:.1E}'.format(self.IFFREQ[i] * 1E+9).split('E+')
-                    tmp = tmp_val[0] + 'E' + tmp_val[1]
-                    self.startfile.append('% FREQ_IF' + str(i + 1) + '=' + tmp)
-                else:
-                    self.startfile.append('% FREQ_IF' + str(i + 1) + '=0') 
-            for i in range(16, 24):
-                self.startfile.append('% FREQ_IF' + str(i + 1) + '=0') 
+        self.startfile.append("% OBSERVER=" + self.USER_NAME + "")
+        #self.startfile.append("% GROUP=" + os.getlogin() + "")
+        self.startfile.append("% GROUP=" + self.USER_NAME + "")
+        #self.startfile.append("% PROJECT=vlbi")
+        self.startfile.append("% PROJECT=" + self.PROJECT_NAME + "")
+        self.startfile.append("% OBS_NAME=" + self.obs_name + "")
+        self.startfile.append("% MMC_CMD1=MCL")
+        self.startfile.append("% MMC_CMD2=MOP")
+        self.startfile.append("% MMC_CMD3=")
+        self.startfile.append("% MMC_CMD4=")
+        self.startfile.append("% ON_TINTEG=10")
+        self.startfile.append("% OFF_TINTEG=10")
+        self.startfile.append("% CALIB_TINTEG=10")
+
+        # # self.startfile.append('% information of .device')
+        # self.startfile.append('% CHAPTER=')
+        # self.startfile.append('% SRC_NAME=' + SOURCE_LIST[SOURCE_NUMBER][0])
+        # self.startfile.append('% SRC_COMMENT=' + SOURCE_LIST[SOURCE_NUMBER][0])
+        # self.startfile.append('% SW_MODE=POS')
+        # self.startfile.append('% POS_ANGLE=0')
+        # self.startfile.append('% EPOCH=J2000')
+        # self.startfile.append('% VELO=24000.0')
+        # self.startfile.append('% VDEF=RAD')
+        # self.startfile.append('% VREF=LSR')
+        # if self.startfile_mode['pointing']:
+        #     self.startfile.append('% OBS_MODE=POINTING')
+        # if self.startfile_mode['vlbi']:
+        #     self.startfile.append('% OBS_MODE=NORMAL')
+        # if self.startfile_mode['pointing']:
+        #     self.startfile.append('% SCAN_TYPE=5POINTS ')
+        # if self.startfile_mode['vlbi']:
+        #     self.startfile.append('% SCAN_TYPE=CENTER ')
+        # for i, s in enumerate(self.array_list):
+        #     if s[0] != None:
+        #         tmp_val = '{:E}'.format(s[2] * 1E+9).split('E+')
+        #         tmp = str(float(tmp_val[0])) + 'E' + tmp_val[1]
+        #         self.startfile.append('% OBS_FREQ' + str(i + 1) + '=' + tmp)
+        #     else:
+        #         self.startfile.append('% OBS_FREQ' + str(i + 1) + '=0') 
+        # for i in range(16, 24):
+        #     self.startfile.append('% OBS_FREQ' + str(i + 1) + '=0') 
 
 
-            for i, s in enumerate(self.array_list):
-                if s[0] != None:
-                    if s[0] in self.change_name_prm.keys():
-                        name = self.change_name_prm[s[0]]
-                    else:
-                        name = s[0]
-                    self.startfile.append('% FE' + str(i + 1) + '=' + name)
-                else:
-                    self.startfile.append('% FE' + str(i + 1) + '=') 
-            for i in range(16, 24):
-                self.startfile.append('% FE' + str(i + 1) + '=') 
+        # for i, s in enumerate(self.array_list):
+        #     if s[0] != None:
+        #         tmp_val = '{:.1E}'.format(self.IFFREQ[i] * 1E+9).split('E+')
+        #         tmp = tmp_val[0] + 'E' + tmp_val[1]
+        #         self.startfile.append('% FREQ_IF' + str(i + 1) + '=' + tmp)
+        #     else:
+        #         self.startfile.append('% FREQ_IF' + str(i + 1) + '=0') 
+        # for i in range(16, 24):
+        #     self.startfile.append('% FREQ_IF' + str(i + 1) + '=0') 
+
+
+        # for i, s in enumerate(self.array_list):
+        #     if s[0] != None:
+        #         if s[0] in self.change_name_prm.keys():
+        #             name = self.change_name_prm[s[0]]
+        #         else:
+        #             name = s[0]
+        #         self.startfile.append('% FE' + str(i + 1) + '=' + name)
+        #     else:
+        #         self.startfile.append('% FE' + str(i + 1) + '=') 
+        # for i in range(16, 24):
+        #     self.startfile.append('% FE' + str(i + 1) + '=') 
 
 
 
-            self.startfile.append("% MMC_CMD1=MCL")
-            self.startfile.append("% MMC_CMD2=MOP")
-            self.startfile.append("% MMC_CMD3=")
-            self.startfile.append("% MMC_CMD4=")
-            self.startfile.append('% ON_NTOTAL=6')
-            self.startfile.append('% ON_NSEQUENCE=6')
-            self.startfile.append('% ON_TINTEG=10')
-            self.startfile.append('% ON_COORD_SYS=AZEL')
-            self.startfile.append('% ON1=(0.002778,0.000000)')
-            self.startfile.append('% ON2=(0.000000,0.000000)')
-            self.startfile.append('% ON3=(-0.002778,0.000000)')
-            self.startfile.append('% ON4=(0.000000,0.002778)')
-            self.startfile.append('% ON5=(0.000000,0.000000)')
-            self.startfile.append('% ON6=(0.000000,-0.002778)')
-            self.startfile.append('% OFF_NUSED=1')
-            self.startfile.append('% OFF_TINTEG=10')
-            self.startfile.append('% OFF_COORD_SYS=AZEL')
-            self.startfile.append('% OFF1=(0.050000,0.000000)')
-            self.startfile.append('% OFF2=(0.0,0.0)')
-            self.startfile.append('% OFF3=(0.0,0.0)')
-            self.startfile.append('% OFF4=(0.0,0.0)')
-            self.startfile.append('% OFF5=(0.0,0.0)')
-            self.startfile.append('% OFF6=(0.0,0.0)')
-            self.startfile.append('% OFF7=(0.0,0.0)')
-            self.startfile.append('% OFF8=(0.0,0.0)')
-            self.startfile.append('% OFF9=(0.0,0.0)')
-            self.startfile.append('% NSEQUENCE=100')
-            self.startfile.append('% CALIB_TINTEG=10')
-            self.startfile.append('% CALIB_UNIT=SEQUENCE')
-            self.startfile.append('% PATTERN=1***1***')
-            self.startfile.append('% CALIB_INTERVAL=100')
-            
-            if self.startfile_mode['pointing']:
-                self.startfile.append('% OBS_TYPE=SAM45_LIN')
-                for i, s in enumerate(self.array_list):
-                    if s[0] != None:
-                        tmp_val = '{:E}'.format(s[8] * 1E+9).split('E+')
-                        tmp = str(float(tmp_val[0])) + 'E' + tmp_val[1]
-                        self.startfile.append('% SAM45_FREQ' + str(i + 1) + '=' + tmp)
-                    else:
-                        self.startfile.append('% SAM45_FREQ' + str(i + 1) + '=0') 
-                for i in range(len(self.array_list), 32):
-                    self.startfile.append('% SAM45_FREQ' + str(i + 1) + '=0') 
+        # self.startfile.append("% MMC_CMD1=MCL")
+        # self.startfile.append("% MMC_CMD2=MOP")
+        # self.startfile.append("% MMC_CMD3=")
+        # self.startfile.append("% MMC_CMD4=")
+        # self.startfile.append('% ON_NTOTAL=6')
+        # self.startfile.append('% ON_NSEQUENCE=6')
+        # self.startfile.append('% ON_TINTEG=10')
+        # self.startfile.append('% ON_COORD_SYS=AZEL')
+        # self.startfile.append('% ON1=(0.002778,0.000000)')
+        # self.startfile.append('% ON2=(0.000000,0.000000)')
+        # self.startfile.append('% ON3=(-0.002778,0.000000)')
+        # self.startfile.append('% ON4=(0.000000,0.002778)')
+        # self.startfile.append('% ON5=(0.000000,0.000000)')
+        # self.startfile.append('% ON6=(0.000000,-0.002778)')
+        # self.startfile.append('% OFF_NUSED=1')
+        # self.startfile.append('% OFF_TINTEG=10')
+        # self.startfile.append('% OFF_COORD_SYS=AZEL')
+        # self.startfile.append('% OFF1=(0.050000,0.000000)')
+        # self.startfile.append('% OFF2=(0.0,0.0)')
+        # self.startfile.append('% OFF3=(0.0,0.0)')
+        # self.startfile.append('% OFF4=(0.0,0.0)')
+        # self.startfile.append('% OFF5=(0.0,0.0)')
+        # self.startfile.append('% OFF6=(0.0,0.0)')
+        # self.startfile.append('% OFF7=(0.0,0.0)')
+        # self.startfile.append('% OFF8=(0.0,0.0)')
+        # self.startfile.append('% OFF9=(0.0,0.0)')
+        # self.startfile.append('% NSEQUENCE=100')
+        # self.startfile.append('% CALIB_TINTEG=10')
+        # self.startfile.append('% CALIB_UNIT=SEQUENCE')
+        # self.startfile.append('% PATTERN=1***1***')
+        # self.startfile.append('% CALIB_INTERVAL=100')
+        
+        # if self.startfile_mode['pointing']:
+        #     self.startfile.append('% OBS_TYPE=SAM45_LIN')
+        #     for i, s in enumerate(self.array_list):
+        #         if s[0] != None:
+        #             tmp_val = '{:E}'.format(s[8] * 1E+9).split('E+')
+        #             tmp = str(float(tmp_val[0])) + 'E' + tmp_val[1]
+        #             self.startfile.append('% SAM45_FREQ' + str(i + 1) + '=' + tmp)
+        #         else:
+        #             self.startfile.append('% SAM45_FREQ' + str(i + 1) + '=0') 
+        #     for i in range(len(self.array_list), 32):
+        #         self.startfile.append('% SAM45_FREQ' + str(i + 1) + '=0') 
+
+
 
 
         self.startfile.append('############################')

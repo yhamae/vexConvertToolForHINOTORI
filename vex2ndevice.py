@@ -1028,31 +1028,31 @@ class Vex2Ndevice:
             ut.UtilFunc.chkprint(array_freq_rx_list)
             ut.UtilFunc.chkprint(rxlist)
             # print('--------------------------------------------------------')
-            print("Array  Freqency[GHz]  rx  Band  VexFileFreq  index　　 LO Set")
-        else:
+            # print("Array  Freqency[GHz]  rx  Band  VexFileFreq  index　　 LO Set")
+        # else:
             # print('-------------------------------------------------')
-            print("Array 1stLO[GHz] rxname  Band rx_No CenterFreq[MHz]")
+        print("Array 1stLO[GHz] rxname  Band rx_No CenterFreq[MHz]")
         for i, lists in enumerate(array_freq_rx_list):
             # print(lists)
-            if self.debag:
-                # print(type(lists[5]))
-                # print(lists[6])
-                if lists[6] != None : tmp = ':'.join(map(str,lists[6]))
-                else: tmp = ''
-                print('{0:>5}  {1:>13.10}  {2:>8}  {3:>4}  {4:>11.10}  {5:>5}  {6:>9}'.format(i + 1, str(lists[2]),str(lists[0]), str(lists[1]), str(lists[3]), str(lists[4] + 1), tmp))
+            # if self.debag:
+            #     # print(type(lists[5]))
+            #     # print(lists[6])
+            #     if lists[6] != None : tmp = ':'.join(map(str,lists[6]))
+            #     else: tmp = ''
+            #     print('{0:>5}  {1:>13.10}  {2:>8}  {3:>4}  {4:>11.10}  {5:>5}  {6:>9}'.format(i + 1, str(lists[2]),str(lists[0]), str(lists[1]), str(lists[3]), str(lists[4] + 1), tmp))
+            # else:
+            if lists[4] == -1:
+                tmp_num = 'None'
+                tmp_cent = 'None'
+                first_LO = 'None'
             else:
-                if lists[4] == -1:
-                    tmp_num = 'None'
-                    tmp_cent = 'None'
-                    first_LO = 'None'
-                else:
-                    tmp_num = lists[4] + 1
-                    tmp_cent = lists[3] + lists[7] / 2
-                    first_LO = lists[2] - 6
-                if i + 1 in self.pointing_array_num.values():
-                    print('   {0} {1:>10.10} {2:>6}  {3:>4} {4:>5} {5}'.format(ut.pycolor.RED + str(i + 1).zfill(2) + ut.pycolor.END, str(first_LO),str(lists[0]), str(lists[1]), tmp_num, str(tmp_cent)))
-                else:
-                    print('   {0} {1:>10.10} {2:>6}  {3:>4} {4:>5} {5}'.format(str(i + 1).zfill(2), str(first_LO),str(lists[0]), str(lists[1]), tmp_num, str(tmp_cent)))
+                tmp_num = lists[4] + 1
+                tmp_cent = lists[3] + lists[7] / 2
+                first_LO = lists[2] - 6
+            if i + 1 in self.pointing_array_num.values():
+                print('   {0} {1:>10.10} {2:>6}  {3:>4} {4:>5} {5}'.format(ut.pycolor.RED + str(i + 1).zfill(2) + ut.pycolor.END, str(first_LO),str(lists[0]), str(lists[1]), tmp_num, str(tmp_cent)))
+            else:
+                print('   {0} {1:>10.10} {2:>6}  {3:>4} {4:>5} {5}'.format(str(i + 1).zfill(2), str(first_LO),str(lists[0]), str(lists[1]), tmp_num, str(tmp_cent)))
         print('(' + ut.pycolor.RED + 'Red array number' + ut.pycolor.END + ' is Pointing)')
         if self.debag:
             print('------------------')
