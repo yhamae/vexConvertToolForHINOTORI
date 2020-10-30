@@ -458,8 +458,8 @@ class Vex2Start():
         self.startfile.append("#---------------------------------------------------")
         self.startfile.append("#------- WS COSMOS INSTRUCTION FILE")
         self.startfile.append("#------- Generated from VLBI Schedule")
-        self.startfile.append("#------- Conversion Software ver. 17SEP18")
-        self.startfile.append("#------------------- made by " + "H.Imai" + "")
+        self.startfile.append("#------- Conversion Software ver." + self.version)
+        # self.startfile.append("#------------------- made by " + "H.Imai" + "")
         self.startfile.append("#------- Creation Date : %04d/%02d/%02d %02d:%02d:%02d\n" %(Create_Date.year, Create_Date.month, Create_Date.day, Create_Date.hour, Create_Date.minute, Create_Date.second))
         self.startfile.append("#---------------------------------------------------")
         self.startfile.append("")
@@ -719,6 +719,8 @@ class Vex2Start():
             if i < len(self.rxlist):
                 if not self.rxlist[i][0][0:2] in 'TZ':
                     tmp += self.rxlist[i][0][0:3]
+                else:
+                    tmp += ','
             if i != 7:
                 tmp += ','
         self.startfile.append('SET RXT RX_NAME \'' + tmp + '\'')
@@ -897,14 +899,14 @@ class Vex2Start():
         self.startfile.append('WAIT_READY ANT')
         self.startfile.append('WAIT RXT')
         # if self.startfile_mode['pointing']:
-        self.startfile.append('EXECUTE SAM45 ACTION(CREATE)')
+        # self.startfile.append('EXECUTE SAM45 ACTION(CREATE)')
         self.startfile.append('###############################')
         self.startfile.append('# Preliminary setup for SAM45 #')
         self.startfile.append('###############################')
         self.startfile.append('EXECUTE RXT ACTION(LEVEL1ST)')
         self.startfile.append('WAIT RXT')
-        self.startfile.append('EXECUTE SAM45 TYPE(PRE)')
-        self.startfile.append('WAIT SAM45')
+        # self.startfile.append('EXECUTE SAM45 TYPE(PRE)')
+        # self.startfile.append('WAIT SAM45')
         # self.startfile.append('EXECUTE RXT ACTION(LEVEL2ND)')
         self.startfile.append('WAIT RXT')
 
