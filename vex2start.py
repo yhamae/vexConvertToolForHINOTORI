@@ -600,7 +600,7 @@ class Vex2Start():
         #  write GROUP OF DEVICES
         #-------------------------------------------------#
         self.startfile.append("#-------- DEFINE GROUP OF DEVICES --------")
-        self.startfile.append("GROUP GRPTRK ANT ANT RXT SAM45 SYNTHE_L SYNTHE_K VLBI")
+        self.startfile.append("GROUP GRPTRK ANT RXT SYNTHE_L SYNTHE_K VLBI")
         # self.startfile.append("")
 
         #-------------------------------------------------#
@@ -613,7 +613,7 @@ class Vex2Start():
         self.startfile.append('OPEN SYNTHE')
         if self.startfile_mode['pointing']:
             self.startfile.append('OPEN SAM45')
-        self.startfile.append('OPEN MRG')
+        # self.startfile.append('OPEN MRG')
         self.startfile.append("OPEN MMC")
         self.startfile.append("OPEN VLBI")
         # self.startfile.append("")
@@ -633,15 +633,15 @@ class Vex2Start():
         self.startfile.append('SET ANT 2BEAM_MODE 0')
         self.startfile.append('SET ANT POINTING \'H40\'')
         self.startfile.append('SET ANT OTF_MODE \'OFF\'')
-        self.startfile.append('######################')
-        self.startfile.append('# Set MRG Parameters #')
-        self.startfile.append('######################')
-        self.startfile.append('SET MRG GROUP \'' + self.USER_NAME + '\'')
-        self.startfile.append('SET MRG PROJECT \'' + self.PROJECT_NAME + '\'')
-        self.startfile.append('SET MRG BK_TYPE \'SAMZ\'')
-        self.startfile.append('SET MRG SP_MODE \'OFF\'')
-        self.startfile.append('SET MRG OTF_MODE \'OFF\'')
-        self.startfile.append('SET MRG OFF_HOLD \'ON\'')
+        # self.startfile.append('######################')
+        # self.startfile.append('# Set MRG Parameters #')
+        # self.startfile.append('######################')
+        # self.startfile.append('SET MRG GROUP \'' + self.USER_NAME + '\'')
+        # self.startfile.append('SET MRG PROJECT \'' + self.PROJECT_NAME + '\'')
+        # self.startfile.append('SET MRG BK_TYPE \'SAMZ\'')
+        # self.startfile.append('SET MRG SP_MODE \'OFF\'')
+        # self.startfile.append('SET MRG OTF_MODE \'OFF\'')
+        # self.startfile.append('SET MRG OFF_HOLD \'ON\'')
         self.startfile.append('################################')
         self.startfile.append('# Set Synthesizer SYNTHE_L Parameters #')
         self.startfile.append('################################')
@@ -706,7 +706,8 @@ class Vex2Start():
         tmp = ''
         for i in range(0, 8):
             if i < len(self.rxlist):
-                tmp += self.rxlist[i][0]
+                if not self.rxlist[i][0][0:2] in 'TZ':
+                    tmp += self.rxlist[i][0][0:3]
             if i != 7:
                 tmp += ','
         self.startfile.append('SET RXT RX_NAME \'' + tmp + '\'')
@@ -907,7 +908,7 @@ class Vex2Start():
             self.startfile.append('EXECUTE SAM45 TYPE(ZERO)')
             self.startfile.append('WAIT SAM45')
         self.startfile.append('INTERRUPT ANT SYNTHE')
-        self.startfile.append('EXECUTE MRG')
+        # self.startfile.append('EXECUTE MRG')
         self.startfile.append('#############')
         self.startfile.append('# CALIB (R) #')
         self.startfile.append('#############')
