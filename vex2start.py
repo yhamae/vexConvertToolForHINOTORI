@@ -457,7 +457,7 @@ class Vex2Start():
 
         self.startfile.append("#---------------------------------------------------")
         self.startfile.append("#------- WS COSMOS INSTRUCTION FILE")
-        self.startfile.append("#------- Generated from VLBI Schedule")
+        self.startfile.append("#------- Generated from VLBI Schedule (" + self.vex_file_name + ')')
         self.startfile.append("#------- Conversion Software ver." + self.version)
         # self.startfile.append("#------------------- made by " + "H.Imai" + "")
         self.startfile.append("#------- Creation Date : %04d/%02d/%02d %02d:%02d:%02d\n" %(Create_Date.year, Create_Date.month, Create_Date.day, Create_Date.hour, Create_Date.minute, Create_Date.second))
@@ -688,7 +688,7 @@ class Vex2Start():
         self.startfile.append('######################')
         self.startfile.append('# Set RXT Parameters #')
         self.startfile.append('######################')
-        self.startfile.append('SET RXT SETUP_FILE \'' + self.dat_filename + '\'')
+        self.startfile.append('SET RXT SETUP_FILE \'' + self.dat_filename.split('/')[-1] + '\'')
         self.startfile.append('SET RXT VELO 24000.0')
         self.startfile.append('SET RXT VDEF \'RAD\'')
         self.startfile.append('SET RXT VREF \'LSR\'')
@@ -715,12 +715,19 @@ class Vex2Start():
                 tmp += ','
         self.startfile.append('SET RXT FREQ_IF1  (' + tmp + ')')
         tmp = ''
+        tmp_rx_lst = []
         for i in range(0, 8):
             if i < len(self.rxlist):
-                if not self.rxlist[i][0][0:2] in 'TZ':
-                    tmp += self.rxlist[i][0][0:3]
-                else:
-                    tmp += ','
+                if self.rxlist[i][0][0:2] not in 'TZ' and self.rxlist[i][0][0:3] not in tmp_rx_lst:
+                    # tmp += self.rxlist[i][0][0:3]
+                    tmp_rx_lst.append(self.rxlist[i][0][0:3])
+                # else:
+                    # tmp += ','
+            # if i != 7:
+                # tmp += ','
+        for i in range(0, 8):
+            if i < len(tmp_rx_lst):
+                tmp += tmp_rx_lst[i]
             if i != 7:
                 tmp += ','
         self.startfile.append('SET RXT RX_NAME \'' + tmp + '\'')
@@ -897,70 +904,80 @@ class Vex2Start():
         self.startfile.append('EXECUTE SYNTHE OFFSET(0.000000,0.000000) TYPE(ZERO)')
         self.startfile.append('EXECUTE ANT OFFSET(0.050000,0.000000) TYPE(ZERO)')
         self.startfile.append('WAIT_READY ANT')
-        self.startfile.append('WAIT RXT')
+        # self.startfile.append('WAIT RXT')
         # if self.startfile_mode['pointing']:
         # self.startfile.append('EXECUTE SAM45 ACTION(CREATE)')
         self.startfile.append('###############################')
         self.startfile.append('# Preliminary setup for SAM45 #')
         self.startfile.append('###############################')
         self.startfile.append('EXECUTE RXT ACTION(LEVEL1ST)')
-        self.startfile.append('WAIT RXT')
+        # self.startfile.append('WAIT RXT')
         # self.startfile.append('EXECUTE SAM45 TYPE(PRE)')
         # self.startfile.append('WAIT SAM45')
         # self.startfile.append('EXECUTE RXT ACTION(LEVEL2ND)')
-        self.startfile.append('WAIT RXT')
+        # self.startfile.append('WAIT RXT')
 
 
         
-        self.startfile.append('##############')
-        self.startfile.append('# Zero Point #')
-        self.startfile.append('##############')
-        self.startfile.append('WAIT MMC')
-        if self.startfile_mode['pointing']:
-            self.startfile.append('SET SAM45 INTEG_TIME 1')
-            self.startfile.append('EXECUTE SAM45 TYPE(ZERO)')
-            self.startfile.append('WAIT SAM45')
-        self.startfile.append('INTERRUPT ANT SYNTHE')
-        # self.startfile.append('EXECUTE MRG')
-        self.startfile.append('#############')
-        self.startfile.append('# CALIB (R) #')
-        self.startfile.append('#############')
-        if self.startfile_mode['pointing']:
-            self.startfile.append('SET SAM45 INTEG_TIME 10')
-        self.startfile.append('EXECUTE MMC CMD(MCL)')
-        tmp = ''
-        for i in range(0, 16):
-            if i < len(self.array_list) and self.array_list[i][0] != None:
-                tmp += str(self.att[i])
-            else:
-                tmp += '0'
-            if i + 1 != 16:
-                tmp += ','
-        self.startfile.append('EXECUTE IFATT CMD(' + tmp + ')')
+        # self.startfile.append('##############')
+        # self.startfile.append('# Zero Point #')
+        # self.startfile.append('##############')
+        # self.startfile.append('WAIT MMC')
+        # if self.startfile_mode['pointing']:
+        #     self.startfile.append('SET SAM45 INTEG_TIME 1')
+        #     self.startfile.append('EXECUTE SAM45 TYPE(ZERO)')
+        #     self.startfile.append('WAIT SAM45')
+        # self.startfile.append('INTERRUPT ANT SYNTHE')
+        # # self.startfile.append('EXECUTE MRG')
 
-        self.startfile.append('EXECUTE ANT OFFSET(0.050000,0.000000) TYPE(R)')
-        self.startfile.append('WAIT_READY ANT')
-        self.startfile.append('WAIT IFATT')
-        self.startfile.append('WAIT MMC')
-        if self.startfile_mode['pointing']:
-            self.startfile.append('EXECUTE SAM45 TYPE(R)')
-            self.startfile.append('WAIT SAM45')
-        self.startfile.append('INTERRUPT ANT')
-        self.startfile.append('EXECUTE IFATT CMD(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)')
-        self.startfile.append('###############')
-        self.startfile.append('# CALIB (SKY) #')
-        self.startfile.append('###############')
-        self.startfile.append('EXECUTE MMC CMD(MOP)')
-        self.startfile.append('EXECUTE ANT OFFSET(0.050000,0.000000) TYPE(SKY)')
-        self.startfile.append('WAIT_READY ANT')
-        self.startfile.append('WAIT MMC')
-        self.startfile.append('WAIT IFATT')
-        if self.startfile_mode['pointing']:
-            self.startfile.append('EXECUTE SAM45 TYPE(SKY)')
-            self.startfile.append('WAIT SAM45')
-        self.startfile.append('INTERRUPT ANT')
+
+        # self.startfile.append('#############')
+        # self.startfile.append('# CALIB (R) #')
+        # self.startfile.append('#############')
+        # if self.startfile_mode['pointing']:
+        #     self.startfile.append('SET SAM45 INTEG_TIME 10')
+        # self.startfile.append('EXECUTE MMC CMD(MCL)')
+        # tmp = ''
+
+        # for i in range(0, 16):
+        #     if i < len(self.array_list) and self.array_list[i][0] != None:
+        #         tmp += str(self.att[i])
+        #     else:
+        #         tmp += '0'
+        #     if i + 1 != 16:
+        #         tmp += ','
+        # self.startfile.append('EXECUTE IFATT CMD(' + tmp + ')')
+
+        # self.startfile.append('EXECUTE ANT OFFSET(0.050000,0.000000) TYPE(R)')
+        # self.startfile.append('WAIT_READY ANT')
+        # self.startfile.append('WAIT IFATT')
+        # self.startfile.append('WAIT MMC')
+        # if self.startfile_mode['pointing']:
+        #     self.startfile.append('EXECUTE SAM45 TYPE(R)')
+        #     self.startfile.append('WAIT SAM45')
+        # self.startfile.append('INTERRUPT ANT')
+        # self.startfile.append('EXECUTE IFATT CMD(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)')
+        # self.startfile.append('###############')
+        # self.startfile.append('# CALIB (SKY) #')
+        # self.startfile.append('###############')
+        # self.startfile.append('EXECUTE MMC CMD(MOP)')
+        # self.startfile.append('EXECUTE ANT OFFSET(0.050000,0.000000) TYPE(SKY)')
+        # self.startfile.append('WAIT_READY ANT')
+        # self.startfile.append('WAIT MMC')
+        # self.startfile.append('WAIT IFATT')
+        # if self.startfile_mode['pointing']:
+        #     self.startfile.append('EXECUTE SAM45 TYPE(SKY)')
+        #     self.startfile.append('WAIT SAM45')
+        # self.startfile.append('INTERRUPT ANT')
         
-
+        # for i in range(0, 16):
+        #     if i < len(self.array_list) and self.array_list[i][0] != None:
+        #         tmp += str(self.att[i])
+        #     else:
+        #         tmp += '0'
+        #     if i + 1 != 16:
+        #         tmp += ','
+        # self.startfile.append('EXECUTE IFATT CMD(' + tmp + ')')
 
 
         if self.startfile_mode['vlbi']:
@@ -1430,6 +1447,9 @@ class Vex2Start():
         self.startfile.append("WAIT ANT")
         self.startfile.append("WAIT MMC")
         self.startfile.append("WAIT VLBI")
+        self.startfile.append("WAIT RXT")
+        self.startfile.append("CLOSE RXT")
+        # self.startfile.append("CLOSE IFATT")
         self.startfile.append("CLOSE ANT")
         self.startfile.append("CLOSE MMC")
         self.startfile.append("CLOSE VLBI")
