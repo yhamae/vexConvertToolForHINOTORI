@@ -6,7 +6,7 @@
 # Since   : Nov, 2019
 #           Yuki Hamae
 # Update  : Oct, 2020
-#           Beta版リリース
+#           v1.0-beta.1
 
 from importlib import machinery
 import os
@@ -37,7 +37,7 @@ class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
         self.start_error = []
         self.prm_filename = ''
         self.vexdata = {}
-        self.version = 'Beta1.0'
+        self.version = 'v1.0-beta.1'
 
     def reverse_print(self, moji):
         '''
@@ -193,7 +193,10 @@ class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
 
 
         if self.dat_filename == '':
-            self.dat_filename = os.path.splitext(self.vex_file_name)[0] + ".dat"
+            if hasattr(prm, 'start_file_name'):
+                self.dat_filename = os.path.splitext(self.start_file_name)[0] + ".dat"
+            else:
+                self.dat_filename = os.path.splitext(self.vex_file_name)[0] + ".dat"
 
 
         return True
