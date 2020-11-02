@@ -449,21 +449,37 @@ class Vex2Start():
         SOURCE_NUMBER = 0
         right_ascension = float(SOURCE_LIST[SOURCE_NUMBER][1][0:2]) * 15 + float(SOURCE_LIST[SOURCE_NUMBER][1][3:5]) * (15/60.0) + float(SOURCE_LIST[SOURCE_NUMBER][1][6:8]) * (15/3600.0) + 0.01 * float(SOURCE_LIST[SOURCE_NUMBER][1][9:11]) * (15/3600.0)
 
-        if SOURCE_LIST[SOURCE_NUMBER][2][0] == "+" or SOURCE_LIST[SOURCE_NUMBER][2][0] == "-":
+#        if SOURCE_LIST[SOURCE_NUMBER][2][0] == "+" or SOURCE_LIST[SOURCE_NUMBER][2][0] == "-":
+#            declination = float(SOURCE_LIST[SOURCE_NUMBER][2][0:3]) + float(SOURCE_LIST[SOURCE_NUMBER][2][4:6]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][7:11]) / 3600.0
+#        else:
+#            declination = float(SOURCE_LIST[SOURCE_NUMBER][2][0:2]) + float(SOURCE_LIST[SOURCE_NUMBER][2][3:5]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][6:10]) / 3600.0
+
+        if SOURCE_LIST[SOURCE_NUMBER][2][0] == "-":
+            declination = -1.0*(float(SOURCE_LIST[SOURCE_NUMBER][2][1:3]) + float(SOURCE_LIST[SOURCE_NUMBER][2][4:6]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][7:11]) / 3600.0)
+        elif SOURCE_LIST[SOURCE_NUMBER][2][0] == "+":
             declination = float(SOURCE_LIST[SOURCE_NUMBER][2][0:3]) + float(SOURCE_LIST[SOURCE_NUMBER][2][4:6]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][7:11]) / 3600.0
         else:
             declination = float(SOURCE_LIST[SOURCE_NUMBER][2][0:2]) + float(SOURCE_LIST[SOURCE_NUMBER][2][3:5]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][6:10]) / 3600.0
-
-
-        self.startfile.append("#---------------------------------------------------")
-        self.startfile.append("#------- WS COSMOS INSTRUCTION FILE")
-        self.startfile.append("#------- Generated from VLBI Schedule (" + self.vex_file_name + ')')
-        self.startfile.append("#------- Conversion Software ver." + self.version)
-        # self.startfile.append("#------------------- made by " + "H.Imai" + "")
-        self.startfile.append("#------- Creation Date : %04d/%02d/%02d %02d:%02d:%02d\n" %(Create_Date.year, Create_Date.month, Create_Date.day, Create_Date.hour, Create_Date.minute, Create_Date.second))
-        self.startfile.append("#---------------------------------------------------")
-        self.startfile.append("")
-
+            
+        start_head = [
+                    "WS COSMOS INSTRUCTION FILE",
+                    "Generated from VLBI Schedule (" + self.vex_file_name + ')', 
+                    "Conversion Software ver." + self.version, 
+                    "Creation Date : %04d/%02d/%02d %02d:%02d:%02d" %(Create_Date.year, Create_Date.month, Create_Date.day, Create_Date.hour, Create_Date.minute, Create_Date.second)
+                    ]
+        # self.startfile.append("#---------------------------------------------------")
+        # self.startfile.append("# WS COSMOS INSTRUCTION FILE")
+        # self.startfile.append("# Generated from VLBI Schedule (" + self.vex_file_name + ')')
+        # self.startfile.append("# Conversion Software ver." + self.version)
+        # # self.startfile.append("#------------------- made by " + "H.Imai" + "")
+        # self.startfile.append("# Creation Date : %04d/%02d/%02d %02d:%02d:%02d\n" %(Create_Date.year, Create_Date.month, Create_Date.day, Create_Date.hour, Create_Date.minute, Create_Date.second))
+        # self.startfile.append("#---------------------------------------------------")
+        # self.startfile.append("")
+        # self.startfile.append('# ' + '-' * max([len(x) + 2 for x in start_head]))
+        self.startfile.extend(ut.UtilFunc.make_sqr_comment(start_head))
+        # self.startfile.append('# ' + '-' * max([len(x) + 2 for x in start_head]))
+        # self.startfile.append('')
+        # self.startfile.append('')
 
         #-------------------------------------------------#
         #  write OBSTABLE
@@ -587,9 +603,10 @@ class Vex2Start():
 
 
 
-        self.startfile.append('############################')
-        self.startfile.append('# Change LO Switch for H40 #')
-        self.startfile.append('############################')
+        # self.startfile.append('############################')
+        # self.startfile.append('# Change LO Switch for H40 #')
+        # self.startfile.append('############################')
+        self.startfile.extend(ut.UtilFunc.make_sqr_comment('Change LO Switch for H40'))
         self.startfile.append('OPEN MLPPS')
         self.startfile.append('SET KEYWORD \'OK\'')
         self.startfile.append('SET ERR_KEYWORD \'Error\'')
@@ -653,9 +670,10 @@ class Vex2Start():
         # self.startfile.append('SET MRG SP_MODE \'OFF\'')
         # self.startfile.append('SET MRG OTF_MODE \'OFF\'')
         # self.startfile.append('SET MRG OFF_HOLD \'ON\'')
-        self.startfile.append('################################')
-        self.startfile.append('# Set Synthesizer SYNTHE_L Parameters #')
-        self.startfile.append('################################')
+        # self.startfile.append('################################')
+        # self.startfile.append('# Set Synthesizer SYNTHE_L Parameters #')
+        # self.startfile.append('################################')
+        self.startfile.extend(ut.UtilFunc.make_sqr_comment('Set Synthesizer SYNTHE_L Parameters'))
         self.startfile.append('SET SYNTHE_L VELO 24000.0')
         self.startfile.append('SET SYNTHE_L VDEF \'RAD\'')
         self.startfile.append('SET SYNTHE_L VREF \'LSR\'')
@@ -669,9 +687,10 @@ class Vex2Start():
         self.startfile.append('SET SYNTHE_L NMA_FLAG 0')
         self.startfile.append('SET SYNTHE_L SIDBD_TYP \'USB\'')
         self.startfile.append('SET SYNTHE_L SCAN_COOD_OFF \'AZEL\'')
-        self.startfile.append('################################')
-        self.startfile.append('# Set Synthesizer SYNTHE_K Parameters #')
-        self.startfile.append('################################')
+        # self.startfile.append('################################')
+        # self.startfile.append('# Set Synthesizer SYNTHE_K Parameters #')
+        # self.startfile.append('################################')
+        self.startfile.extend(ut.UtilFunc.make_sqr_comment('Set Synthesizer SYNTHE_K Parameters'))
         self.startfile.append('SET SYNTHE_K VELO 24000.0')
         self.startfile.append('SET SYNTHE_K VDEF \'RAD\'')
         self.startfile.append('SET SYNTHE_K VREF \'LSR\'')
@@ -1090,10 +1109,19 @@ class Vex2Start():
 
                     right_ascension = float(SOURCE_LIST[SOURCE_NUMBER][1][0:2]) * 15 + float(SOURCE_LIST[SOURCE_NUMBER][1][3:5]) * (15/60.0) + float(SOURCE_LIST[SOURCE_NUMBER][1][6:8]) * (15/3600.0) + 0.01 * float(SOURCE_LIST[SOURCE_NUMBER][1][9:11]) * (15/3600.0)
 
-                    if SOURCE_LIST[SOURCE_NUMBER][2][0] == "+" or SOURCE_LIST[SOURCE_NUMBER][2][0] == "-":
+#                    if SOURCE_LIST[SOURCE_NUMBER][2][0] == "+" or SOURCE_LIST[SOURCE_NUMBER][2][0] == "-":
+#                        declination = float(SOURCE_LIST[SOURCE_NUMBER][2][0:3]) + float(SOURCE_LIST[SOURCE_NUMBER][2][4:6]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][7:11]) / 3600.0
+#                    else:
+#                        declination = float(SOURCE_LIST[SOURCE_NUMBER][2][0:2]) + float(SOURCE_LIST[SOURCE_NUMBER][2][3:5]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][6:10]) / 3600.0
+
+
+                    if SOURCE_LIST[SOURCE_NUMBER][2][0] == "-":
+                        declination = -1.0*(float(SOURCE_LIST[SOURCE_NUMBER][2][1:3]) + float(SOURCE_LIST[SOURCE_NUMBER][2][4:6]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][7:11]) / 3600.0)
+                    elif SOURCE_LIST[SOURCE_NUMBER][2][0] == "+":
                         declination = float(SOURCE_LIST[SOURCE_NUMBER][2][0:3]) + float(SOURCE_LIST[SOURCE_NUMBER][2][4:6]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][7:11]) / 3600.0
                     else:
                         declination = float(SOURCE_LIST[SOURCE_NUMBER][2][0:2]) + float(SOURCE_LIST[SOURCE_NUMBER][2][3:5]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][6:10]) / 3600.0
+
 
                     #ファイル書き込み部
                     self.startfile.append("SET GRPTRK SRC_NAME \'" + SOURCE_LIST[SOURCE_NUMBER][0] + "\'")
