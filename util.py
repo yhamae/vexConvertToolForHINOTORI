@@ -118,6 +118,21 @@ class UtilFunc():
             print(pycolor.YELLOW + "WARNING: " + pycolor.END, end = "")
             print('\n         '.join(msg))
 
+
+    def make_sqr_comment(msg, moji = '#'):
+        comment = []
+        if isinstance(msg, list):
+            lst = msg
+        else:
+            lst = [msg]
+        max_len =  max([len(x) for x in lst])
+        comment.append(moji * (max_len + 4))
+        for s in lst:
+            shortage = max_len - len(str(s))
+            comment.append(moji + ' ' + str(s) + (' ' * shortage) + ' ' + moji)
+        comment.append(moji * (max_len + 4))
+        return comment
+
     ####################
     #  Debag関係の関数  #
     ####################
