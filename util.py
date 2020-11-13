@@ -1,3 +1,4 @@
+#! /usr/local/bin/Python3
 # Python version 3 (and 2)
 # Contents: ツール関係
 # Since   : Nov, 2019
@@ -13,6 +14,7 @@ import traceback
 # import math
 # import collections
 import inspect
+import sys
 
 
 class UtilFunc():
@@ -69,9 +71,9 @@ class UtilFunc():
             if yes_or_no:
                 while True:
                     if os.path.exists(filename):
-                        print('>>>    ' + pycolor.YELLOW + filename + " is exists" + pycolor.END)
-                        print(">>>    Do you write This file?")
-                        print(">>>    y(yes) / n(no): ", end="")
+                        print(pycolor.YELLOW + filename + " is exists" + pycolor.END)
+                        print("Do you overwrite This file?")
+                        print("y/n: ", end="")
                         tmp = input().strip()
                         if tmp[0] == "y":
                             break
@@ -171,3 +173,11 @@ class pycolor:
     UNDERLINE = '\033[4m'
     INVISIBLE = '\033[08m'
     REVERCE = '\033[07m'
+
+if __name__ == "__main__":
+    args = sys.argv
+    if len(args) == 2:
+        tmp = args[1]
+    else:
+        tmp = ' '.join(map(str, args[1:]))
+    print('\n'.join(UtilFunc.make_sqr_comment(tmp)))
