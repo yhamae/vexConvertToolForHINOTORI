@@ -112,6 +112,13 @@ class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
         if hasattr(prm, 'start_file_flag'): self.start_file_flag = prm.start_file_flag 
         if hasattr(prm, 'start_file_name'): self.start_file_name = prm.start_file_name
         if hasattr(prm, 'error_flag'): self.error_flag = prm.error_flag 
+        if hasattr(prm, 'att'): self.att = prm.att
+        if hasattr(prm, 'IFatt'):
+            for key in prm.IFatt.keys():
+                # print(key[1:].isdecimal())
+                # print(int(key[1:]))
+                if key[1:].isdecimal() and len(self.att) >= int(key[1:]):
+                    self.att[int(key[1:]) - 1] = prm.IFatt[key]
         if hasattr(prm, 'datalist'): self.datalist = prm.datalist
 
         if self.start_file_name == '' or self.start_file_name == ' ':
@@ -149,7 +156,7 @@ class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
         if hasattr(prm, 'device_fname'): self.device_fname = prm.device_fname
         if hasattr(prm, 'device_file_flag'): self.device_file_flag = prm.device_file_flag
         if hasattr(prm, 'Observation_Name'): self.Observation_Name = prm.Observation_Name
-        if hasattr(prm, 'SAM_Att'): self.SAM_Att = prm.SAM_Att
+        if hasattr(prm, 'att'): self.att = prm.att
         if hasattr(prm, 'IFFREQ'): self.IFFREQ = prm.IFFREQ
         if hasattr(prm, 'rx_inf'): self.rx_inf = prm.rx_inf
         if hasattr(prm, 'polarized_inf'): self.polarized_inf = prm.polarized_inf

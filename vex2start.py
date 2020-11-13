@@ -753,6 +753,10 @@ class Vex2Start():
         self.startfile.append('SET RXT RX_NUM 2')
         self.startfile.append('SET RXT USE_FLG (0,0,0)')
         self.startfile.append('EXECUTE RXT')
+        self.startfile.append('####################')
+        self.startfile.append('# Set IF Parameters #')
+        self.startfile.append('#####################')
+        self.startfile.append('SET IFATT DESTINATION ‘SAM45’')
         if self.startfile_mode['pointing']:
             self.startfile.append('#####################')
             self.startfile.append('# Set IF Parameters #')
@@ -930,11 +934,11 @@ class Vex2Start():
         self.startfile.append('# Preliminary setup for SAM45 #')
         self.startfile.append('###############################')
         self.startfile.append('EXECUTE RXT ACTION(LEVEL1ST)')
-        # self.startfile.append('WAIT RXT')
-        # self.startfile.append('EXECUTE SAM45 TYPE(PRE)')
-        # self.startfile.append('WAIT SAM45')
-        # self.startfile.append('EXECUTE RXT ACTION(LEVEL2ND)')
-        # self.startfile.append('WAIT RXT')
+        self.startfile.append('WAIT RXT')
+        self.startfile.append('EXECUTE SAM45 TYPE(PRE)')
+        self.startfile.append('WAIT SAM45')
+        self.startfile.append('EXECUTE RXT ACTION(LEVEL2ND)')
+        self.startfile.append('WAIT RXT')
 
 
         
@@ -957,19 +961,19 @@ class Vex2Start():
         #     self.startfile.append('SET SAM45 INTEG_TIME 10')
         # self.startfile.append('EXECUTE MMC CMD(MCL)')
         # tmp = ''
-
-        # for i in range(0, 16):
-        #     if i < len(self.array_list) and self.array_list[i][0] != None:
-        #         tmp += str(self.att[i])
-        #     else:
-        #         tmp += '0'
-        #     if i + 1 != 16:
-        #         tmp += ','
-        # self.startfile.append('EXECUTE IFATT CMD(' + tmp + ')')
+        tmp = ''
+        for i in range(0, 16):
+            if i < len(self.array_list) and self.array_list[i][0] != None:
+                tmp += str(self.att[i])
+            else:
+                tmp += '0'
+            if i + 1 != 16:
+                tmp += ','
+        self.startfile.append('EXECUTE IFATT CMD(' + tmp + ')')
 
         # self.startfile.append('EXECUTE ANT OFFSET(0.050000,0.000000) TYPE(R)')
         # self.startfile.append('WAIT_READY ANT')
-        # self.startfile.append('WAIT IFATT')
+        self.startfile.append('WAIT IFATT')
         # self.startfile.append('WAIT MMC')
         # if self.startfile_mode['pointing']:
         #     self.startfile.append('EXECUTE SAM45 TYPE(R)')
@@ -1476,6 +1480,8 @@ class Vex2Start():
         self.startfile.append("WAIT MMC")
         self.startfile.append("WAIT VLBI")
         self.startfile.append("WAIT RXT")
+        self.startfile.append("WAIT IFATT") 
+        self.startfile.append("CLOSE IFATT")
         self.startfile.append("CLOSE RXT")
         # self.startfile.append("CLOSE IFATT")
         self.startfile.append("CLOSE ANT")

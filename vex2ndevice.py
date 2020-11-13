@@ -1148,7 +1148,7 @@ class Vex2Ndevice:
 
         for i in range(0, self.max_array_leng):
             if i < len(array_freq_rx_list) and array_freq_rx_list[i][4] != -1:
-                out_data.append('ATT' + str(i + 1).zfill(2) + '=' + str(self.att[i]))
+                out_data.append('ATT' + str(i + 1).zfill(2) + '=' + '5')
             else:
                 out_data.append('ATT' + str(i + 1).zfill(2) + '=')
 
