@@ -82,24 +82,19 @@ error_flag = 'skip_flag'
 ###################
 # Set IFAtt Value #
 ###################
-IFatt = {
-    'A01': 5,
-    'A02': 5,
-    'A03': 5,
-    'A04': 5,
-    'A05': 5,
-    'A06': 5,
-    'A07': 5,
-    'A08': 5,
-    'A09': 5,
-    'A10': 5,
-    'A11': 5,
-    'A12': 5,
-    'A13': 5,
-    'A14': 5,
-    'A15': 5,
-    'A16': 5,
-}
-
-
-
+IFAtt_A01 = 0  # Unused
+IFAtt_A02 = 0  # Unused
+IFAtt_A03 = 5  # H22CH1 (RHCP)
+IFAtt_A04 = 0  # Unused
+IFAtt_A05 = 5  # H22CH2 (LHCP)
+IFAtt_A06 = 0  # Unused
+IFAtt_A07 = 5  # H40 (LHCP) or Z45 H4
+IFAtt_A08 = 0  # Unused
+IFAtt_A09 = 0  # Unused
+IFAtt_A10 = 5  # Z45 V1
+IFAtt_A11 = 5  # TZ2V or Z45 H2
+IFAtt_A12 = 5  # TZ2V
+IFAtt_A13 = 0  # Unused
+IFAtt_A14 = 0  # Unused
+IFAtt_A15 = 5  # TZ2H
+IFAtt_A16 = 5  # TZ2H or Z45 V4
