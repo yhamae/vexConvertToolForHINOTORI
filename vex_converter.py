@@ -121,6 +121,23 @@ class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
                     self.att[int(key[1:]) - 1] = prm.IFatt[key]
         if hasattr(prm, 'datalist'): self.datalist = prm.datalist
 
+        if hasattr(prm, 'IFAtt_A01'): self.att[1 - 1] = prm.IFAtt_A01
+        if hasattr(prm, 'IFAtt_A02'): self.att[2 - 1] = prm.IFAtt_A02
+        if hasattr(prm, 'IFAtt_A03'): self.att[3 - 1] = prm.IFAtt_A03
+        if hasattr(prm, 'IFAtt_A04'): self.att[4 - 1] = prm.IFAtt_A04
+        if hasattr(prm, 'IFAtt_A05'): self.att[5 - 1] = prm.IFAtt_A05
+        if hasattr(prm, 'IFAtt_A06'): self.att[6 - 1] = prm.IFAtt_A06
+        if hasattr(prm, 'IFAtt_A07'): self.att[7 - 1] = prm.IFAtt_A07
+        if hasattr(prm, 'IFAtt_A08'): self.att[8 - 1] = prm.IFAtt_A08
+        if hasattr(prm, 'IFAtt_A09'): self.att[9 - 1] = prm.IFAtt_A09
+        if hasattr(prm, 'IFAtt_A10'): self.att[10 - 1] = prm.IFAtt_A10
+        if hasattr(prm, 'IFAtt_A11'): self.att[11 - 1] = prm.IFAtt_A11
+        if hasattr(prm, 'IFAtt_A12'): self.att[12 - 1] = prm.IFAtt_A12
+        if hasattr(prm, 'IFAtt_A13'): self.att[13 - 1] = prm.IFAtt_A13
+        if hasattr(prm, 'IFAtt_A14'): self.att[14 - 1] = prm.IFAtt_A14
+        if hasattr(prm, 'IFAtt_A15'): self.att[15 - 1] = prm.IFAtt_A15
+        if hasattr(prm, 'IFAtt_A16'): self.att[16 - 1] = prm.IFAtt_A16
+
         if self.start_file_name == '' or self.start_file_name == ' ':
             self.start_file_name = os.path.splitext(self.vex_file_name)[0] + ".start"
         if self.USER_NAME == '':

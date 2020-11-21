@@ -465,7 +465,8 @@ class Vex2Start():
                     "WS COSMOS INSTRUCTION FILE",
                     "Generated from VLBI Schedule (" + self.vex_file_name + ')', 
                     "Conversion Software ver." + self.version, 
-                    "Creation Date : %04d/%02d/%02d %02d:%02d:%02d" %(Create_Date.year, Create_Date.month, Create_Date.day, Create_Date.hour, Create_Date.minute, Create_Date.second)
+                    "Creation Date : %04d/%02d/%02d %02d:%02d:%02d" %(Create_Date.year, Create_Date.month, Create_Date.day, Create_Date.hour, Create_Date.minute, Create_Date.second),
+                    'Type of receiver combination is ' + str(self.type_no)
                     ]
         # self.startfile.append("#---------------------------------------------------")
         # self.startfile.append("# WS COSMOS INSTRUCTION FILE")
