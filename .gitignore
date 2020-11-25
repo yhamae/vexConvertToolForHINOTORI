@@ -5,6 +5,7 @@ data/
 .gitattributes
 *.py[cod]
 *$py.class
+*.code-workspace
 
 # C extensions
 *.so
