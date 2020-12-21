@@ -30,7 +30,7 @@ class Vex2Dat():
         tmp_rx = {'H22':['L', 'R'], 'H40':'', 'Z45':['V', 'H'], 'TZ2':['V', 'H']}
         tmp_rx_range_list = {'H22': [5,7], 'H40': [5,7], 'Z45':[4,8], 'TZ2':[4,8]}
         tmp_first_LO = {'H22': 0, 'H40': 0, 'Z45':0, 'TZ2':0}
-        
+
         for key in tmp_rx.keys():
             for val in tmp_rx[key]:
                 self.rx_range_list[key + val] = tmp_rx_range_list[key]
@@ -66,14 +66,14 @@ class Vex2Dat():
                 print('    2ndLO = 6000 + 3000 + ' - str(obs_center) + ' + ' + str(rx_freq) + ' = ' + str(Decimal(str(second_LO)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)) + 'MHz')
             else:
                 print('    2ndLO = 6000 + 3000 + ' + '8 - ' + str(obs_center) + ' + ' + str(rx_freq) + ' = ' + str(Decimal(str(second_LO)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)) + 'MHz')
-            
+
 
         return second_LO
 
 
     def convert_vex_to_dat(self):
         print(ut.pycolor.UNDERLINE + 'VLBI Dat file' + ut.pycolor.END)
-        
+
         # self.datout[0] = 'VLBI'
         # print(len(self.datout))
         max_leng = max([len(str(self.array_list[i][0])) for i in range(0, len(self.array_list))])
@@ -87,8 +87,8 @@ class Vex2Dat():
                 # print(self.rx_range_list[lists[0]])
                 f = lists[3] + lists[7] / 2
 
-                
-                
+
+
                 # if 'TZ2V' == lists[0] or 'TZ2H' == lists[0]:
                 #     sideband = 'LSB'
                 # else:
@@ -101,9 +101,9 @@ class Vex2Dat():
                     # ut.UtilFunc.chkprintstr('f = ' + str(lists[3]) + " + "  + str(lists[7]) + ' / 2')
                     # print()
                 if i + 1 in self.pointing_array_num.values() or i + 1 == 1 or i + 1 == 2:
-                    print(ut.pycolor.RED + 'A' + str(i + 1).zfill(2) + ut.pycolor.END + ' ' + lists[0] + ', ' + lists[6][1] + ', POINTING')
+                    print('A' + str(i + 1).zfill(2) + ' ' + lists[0] + ', ' + lists[6][1] + ', POINTING')
                 else:
-                    print(ut.pycolor.RED + 'A' + str(i + 1).zfill(2) + ut.pycolor.END + ' ' + lists[0] + ', ' + lists[6][1])
+                    print('A' + str(i + 1).zfill(2) + ' ' + lists[0] + ', ' + lists[6][1])
 
                 # secont_lo_freq = str(Vex2Dat.cal_2nd_LO_freq(self, f, first_lo * 1000, sideband1, sideband2))
                 secont_lo_freq = str(Vex2Dat.cal_2nd_LO_freq(self, f, first_lo * 1000, lists[6][1], pflag = (i + 1 in self.pointing_array_num.values() or i + 1 == 1 or i + 1 == 2)))
@@ -118,7 +118,7 @@ class Vex2Dat():
                 # if float(secont_lo_freq) > self.second_LO_max:
                 #     ut.UtilFunc.print_err_msg(False, '', "2nd L.O.の周波数が11GHｚを超えました", "2nd L.O.の周波数が11GHz以下になるように設定を変更してください")
             else:
-                print(ut.pycolor.RED + 'A' + str(i + 1).zfill(2) + ut.pycolor.END + ' N/A, N/A')
+                print('A' + str(i + 1).zfill(2) + ' N/A, N/A')
                 print('    2ndLO = N/A')
             # else:
             #     self.datout[i + 1] = [str(i + 1).zfill(2), '#'.ljust(max_leng),'', '']
@@ -135,9 +135,9 @@ class Vex2Dat():
         ut.UtilFunc.ask_and_write(self.dat_filename, write_line, self.dat_file_flag, self.yes)
         return True
 
-        
-        
-        
+
+
+
 
 
 

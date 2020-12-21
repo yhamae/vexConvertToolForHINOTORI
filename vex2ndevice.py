@@ -36,35 +36,35 @@ class Vex2Ndevice:
         # [受信機名, SideBand, 静止周波数, vexファイルに記載された周波数, 受信機のindex, 受信機名（詳細）, L.O.の設定, 帯域幅(MHz)]
         # self.rx_inf = {"H22": 22.800, "H40": 43.2, "Z45": 43.2, "TZ2": 87.72}
         self.rx_inf = {"H22": 22.800, "H40": 43.2, "Z45": 43.2, "TZ2": 87.654}
-        self.polarized_inf = {"H22R": ["H22Rcp"], 
-                              "H22L": ["H22Lcp"], 
-                              "H40": ["H40Lcp"], 
-                              "Z45V": ["Z45Vlp", "Z45Vcp", "Z45Lcp"], 
-                              "Z45H": ["Z45Hlp", "Z45Hcp", "Z45Rcp"], 
-                              "TZ2V": ["TZ2Vlp", "TZ2Lcp", "TZ2Vcp"], 
+        self.polarized_inf = {"H22R": ["H22Rcp"],
+                              "H22L": ["H22Lcp"],
+                              "H40": ["H40Lcp"],
+                              "Z45V": ["Z45Vlp", "Z45Vcp", "Z45Lcp"],
+                              "Z45H": ["Z45Hlp", "Z45Hcp", "Z45Rcp"],
+                              "TZ2V": ["TZ2Vlp", "TZ2Lcp", "TZ2Vcp"],
                               "TZ2H": ["TZ2Hlp", "TZ2Rcp", "TZ2Hcp"]}
         self.rx_range = {"H22": 10, "H40": 10, "Z45": 10, "TZ2": 10}
         # self.rx_width = {"H22": 1024, "H40": 2048, "Z45": 1024, "TZ2": 2048}
         # self.rx_width = {"H22": 2048, "H40": 2048, "Z45": 2048, "TZ2": 2048}
-        self.array_num = {"H22R": 3, 
-                          "H22L": 5, 
-                          "H40":    7, 
-                          "TZ2H-1": 15, 
-                          "TZ2V-1": 11, 
-                          "TZ2H-2": 16, 
-                          "TZ2V-2": 12, 
-                          "Z45V-1": 16, 
-                          "Z45H-1": 11, 
-                          "Z45V-2": 10, 
+        self.array_num = {"H22R": 3,
+                          "H22L": 5,
+                          "H40":    7,
+                          "TZ2H-1": 15,
+                          "TZ2V-1": 11,
+                          "TZ2H-2": 16,
+                          "TZ2V-2": 12,
+                          "Z45V-1": 16,
+                          "Z45H-1": 11,
+                          "Z45V-2": 10,
                           "Z45H-2": 7}
-        self.pfreq = {"H22R": 22.23508, 
-                                   "H22L": 22.23508, 
+        self.pfreq = {"H22R": 22.23508,
+                                   "H22L": 22.23508,
                                    "H40":  42.820539}
-        self.pointing_array_num = {"H22R": 4, 
-                                   "H22L": 6, 
+        self.pointing_array_num = {"H22R": 4,
+                                   "H22L": 6,
                                    "H40":  8}
         # self.pointing_array_num = {}
-        
+
         self.att = [5] * self.max_array_leng
         self.IFFREQ = [6.0] * self.max_array_leng
         # self.res_freq = [22.8, 43.2, 87.714]
@@ -93,9 +93,9 @@ class Vex2Ndevice:
                         18: [1,1,1,1,1,1,1,0,0,0,0],
                         19: [1,1,1,0,0,0,0,1,1,1,1]}
         self.rxlist = []
-        
 
-    
+
+
     def __read_sched(self):
         '''
         $SHEDを読み、使われているMODEを取得
@@ -123,12 +123,12 @@ class Vex2Ndevice:
                 if "*" != data[0]:
                     SCHED_TEXT = SCHED_TEXT + data
             tmpSCHED = SCHED_TEXT.split(';')
-            
+
 
             for data in tmpSCHED:
                 if "mode=" in ''.join(data.split()):
                     tmp_mode = ''.join(data.split())[5:]
-                
+
                 if str("station=" + self.station_name) == str(data.split(':')[0].strip()):
                     if self.debag:
                         ut.UtilFunc.chkprint(tmp_mode)
@@ -147,7 +147,7 @@ class Vex2Ndevice:
         '''
 
         MODE_DATA  = self.vexdata['MODE']
-        
+
         FreqMode = {}
         IFMode = {}
         BBCMode = {}
@@ -178,7 +178,7 @@ class Vex2Ndevice:
 
                     if "enddef" == data.split("*")[0].strip()[0:6]:
                         mode_eindex.append(j)
-                        
+
                         break
                     j += 1
 
@@ -196,7 +196,7 @@ class Vex2Ndevice:
 
         return mode_bindex, mode_eindex, FreqMode, IFMode, BBCMode
 
-        
+
     def __check_sched_and_mode(self, mode_bindex, mode_eindex, use_mode, FreqMode, IFMode):
         '''
         ScheduleとModeを比較し、スケジュールで指定されているモードの中で野辺山45ｍの周波数設定がされていないものがないかを確認
@@ -259,7 +259,7 @@ class Vex2Ndevice:
                                 # ut.UtilFunc.chkprint(FREQ_DATA[j].split("*")[0])
                                 ut.UtilFunc.chkprint(re.split(";|:", FREQ_DATA[j].split("*")[0]))
                             tmp_rx = re.split(";|:", FREQ_DATA[j].split("*"" ")[0])[7].strip("\n"" ")
-                            
+
                             if self.debag:
                                 ut.UtilFunc.chkprint(tmp_rx)
                             # if tmp_rx in self.polarized_inf.values():
@@ -297,7 +297,7 @@ class Vex2Ndevice:
                                 # tmp_rx = re.fullmatch('.cp|.lp', tmp_data.strip('*').strip())
                                 if self.debag:
                                     ut.UtilFunc.chkprint(tmp_rx)
-                                
+
                                 if tmp_rx:
                                     # print(tmp_rx.group())
                                     freq_pol.append(tmp_rx)
@@ -305,12 +305,12 @@ class Vex2Ndevice:
                                         ut.UtilFunc.chkprint(tmp_rx)
                                     count = 1
                                     break
-                                
+
                             if count == 0:
                                 freq_pol.append("")
                             # self.result_status["GetFreqSettingError"] = False
                     j += 1
-        
+
 
         # if self.debag:
         #     ut.UtilFunc.chkprint(break_counter, freq_pol)
@@ -368,9 +368,9 @@ class Vex2Ndevice:
             if "def" == IF_DATA[i].strip()[0:3] and IF_DATA[i].split()[1].split(';')[0] in IFMode.values():
                 j = i + 1
                 while j < len(IF_DATA) - 1 and "enddef" != IF_DATA[j].strip()[0:6]:
-                    
+
                     if "if_def" == IF_DATA[j].split("*")[0].strip()[0:6]:
-                        
+
                         try:
                             IF_val.append(float(IF_DATA[j].split(':')[3].strip("MHz"" ")))
                             if self.debag:
@@ -383,7 +383,7 @@ class Vex2Ndevice:
                             ut.UtilFunc.print_err_msg(True, e, "L.O.の設定を正しく読み込めませんでした", "$IFセクションを確認してください")
 
                     j += 1
-    
+
 
         if self.debag:
             ut.UtilFunc.chkprint(IF_val)
@@ -421,7 +421,7 @@ class Vex2Ndevice:
         comb_rx_freq = {}
 
         try:
-            for i in range(len(freq_val)):  
+            for i in range(len(freq_val)):
                 for tmp_key in self.rx_inf.keys():
                     count = 0
                     break_flag = False
@@ -437,7 +437,7 @@ class Vex2Ndevice:
                         if self.debag:
                             ut.UtilFunc.chkprint(tmp_pol)
 
-                        
+
                         for tmp_key2 in self.polarized_inf.keys():
                             for val in self.polarized_inf[tmp_key2]:
                                 # print(val)
@@ -480,7 +480,7 @@ class Vex2Ndevice:
         if self.debag:
             ut.UtilFunc.chkprint(rx_sb_name)
 
-        
+
 
 
         num_of_rx = {}
@@ -517,13 +517,13 @@ class Vex2Ndevice:
         return tmp_rx_list
 
     def __set_freq(self, rx_sb_name):
-        
+
         freq_dic = {}
         # ut.UtilFunc.chkprint(rx_sb_name)
         if self.debag:
             ut.UtilFunc.chkprint(rx_sb_name)
         try:
-            for i, lists in enumerate(rx_sb_name):
+            for lists in rx_sb_name:
                 # print(lists[3][2] + lists[0])
                 if not lists[3][2] + lists[0] in freq_dic.keys():
                     freq_dic[lists[3][2] + lists[0]] = lists
@@ -561,7 +561,7 @@ class Vex2Ndevice:
             ut.UtilFunc.chkprint(tmp_rx_list)
         return tmp_rx_list
 
-            
+
     def __adjust_bandwidth(self, rx_sb_name):
         '''
         読み込んだ周波数を適切な帯域幅になるように調整
@@ -583,30 +583,30 @@ class Vex2Ndevice:
             elif lists[1] == 'LSB':
                 tmp_rx_sb_name[i][2] = [float(lists[2]) - float(lists[4]), float(lists[2]),]
 
-        
+
 
         freq_list.append(tmp_rx_sb_name[0])
         tmp_range = freq_list[freq_list_index][4]
         if self.debag:
             ut.UtilFunc.chkprint(freq_list)
         for i in range(1, len(tmp_rx_sb_name)):
-            # 
+            #
             if self.debag:
                 ut.UtilFunc.chkprint2('tmp_rx_sb_name[' + str(i) + ']', tmp_rx_sb_name[i])
-            
+
             # if  1024 * self.rx_range[tmp_rx_sb_name[i][5]] >= math.fabs(tmp_rx_sb_name[i][2][0] - freq_list[freq_list_index][2][1]) and freq_list[freq_list_index][0:2] == tmp_rx_sb_name[i][0:2] and math.fabs(tmp_rx_sb_name[i][2][1] - freq_list[freq_list_index][2][0]) < 1024:
-            
+
             # if  freq_list[freq_list_index][0:2] == tmp_rx_sb_name[i][0:2] and math.fabs(tmp_rx_sb_name[i][2][1] - freq_list[freq_list_index][2][0]) <= 1024:
             # if  freq_list[freq_list_index][0:2] == tmp_rx_sb_name[i][0:2] and math.fabs(tmp_rx_sb_name[i][2][1] - freq_list[freq_list_index][2][0]) <= 2048:
             if  freq_list[freq_list_index][0:2] == tmp_rx_sb_name[i][0:2]:
-                if self.debag: 
+                if self.debag:
                     ut.UtilFunc.chkprint2('tmp_rx_sb_name[' + str(i - 1) + '][2]', tmp_rx_sb_name[i - 1][2])
                     ut.UtilFunc.chkprint2('tmp_rx_sb_name[' + str(i) + '][2]', tmp_rx_sb_name[i][2])
                 # tmp_rx_sb_name[i][2][1] = tmp_rx_sb_name[i][2][0]
                 # freq_list[freq_list_index][2][0] = tmp_rx_sb_name[i - 1][2][0]
                 freq_list[freq_list_index][2][1] = tmp_rx_sb_name[i][2][1]
                 tmp_range += tmp_rx_sb_name[i][4]
-                if self.debag: 
+                if self.debag:
                     # ut.UtilFunc.chkprint2('tmp_rx_sb_name[' + str(i - 1) + '][3]', tmp_rx_sb_name[i - 1][3])
                     ut.UtilFunc.chkprint2('freq_list[' + str(freq_list_index) + ']', freq_list[freq_list_index])
                 count += 1
@@ -621,7 +621,7 @@ class Vex2Ndevice:
         if self.debag:
             ut.UtilFunc.chklistprint('freq_list', freq_list)
             ut.UtilFunc.chkprint(self.rx_range_list)
-        # tmp_rx_sb_name = 
+        # tmp_rx_sb_name =
         tmplst = []
         count = 0
         for i, lst in enumerate(copy.deepcopy(freq_list)):
@@ -638,7 +638,7 @@ class Vex2Ndevice:
                     tmplst.append(tmp_lst)
                     if self.debag: ut.UtilFunc.chkprint(j, a, tmp_width, range_ini, tmp_lst)
                     range_ini += tmp_width
-                    
+
             else:
                 tmplst.append(lst)
         freq_list = copy.deepcopy(tmplst)
@@ -648,7 +648,7 @@ class Vex2Ndevice:
             # ut.UtilFunc.chklprint(freq_list)
 
         # 周波数のチェックと分割
-        
+
         # add_list = []
         new_freq_list = Vex2Ndevice.__set_h40(self, freq_list)
         pop_lis = []
@@ -698,7 +698,7 @@ class Vex2Ndevice:
                 freq_list[i][2] = lists[2][0] + 0.5 * math.fabs(self.rx_range_list[lists[0]][1] - self.rx_range_list[lists[0]][0]) * 1024
             if lists[1] == 'LSB':
                 freq_list[i][2] = lists[2][1] - 0.5 * math.fabs(self.rx_range_list[lists[0]][1] - self.rx_range_list[lists[0]][0]) * 1024
-                
+
 
 
 
@@ -714,7 +714,7 @@ class Vex2Ndevice:
         '''
         LOの周波数の値を野辺山で使えるように調整
         '''
-        
+
         tmp_list = copy.copy(freq_list)
         if self.debag:
             # print('\n'.join(map(str, freq_list)))
@@ -824,7 +824,7 @@ class Vex2Ndevice:
                     print('rx Mode is "' + str(self.type_no) + '"')
                     print('')
                     break
-            
+
 
             if self.debag:
                 ut.UtilFunc.chkprint(count2)
@@ -842,7 +842,7 @@ class Vex2Ndevice:
 
         array_freq_rx_list = [[None,None,None, None, -1, None, None, None, None]] * self.max_array_leng
         self.use_array_list = {}
-     
+
         # array_freq_rx_list = [[None,None,None, None, -1, None, None, None, None]] * self.max_array_leng
         # [受信機名, SideBand, 静止周波数, vexファイルに記載された周波数, 受信機のindex, 受信機名（詳細）, IFの設定, pointing or vlbi]
         for key in use_polarized_comb.keys():
@@ -851,7 +851,7 @@ class Vex2Ndevice:
                 ut.UtilFunc.chkprint2('self.array_num[' + key + ']', self.array_num[key])
                 ut.UtilFunc.chkprint2('use_polarized_comb[' + key + ']', use_polarized_comb[key])
             tmp_freq = use_polarized_comb[key][1]
-            
+
             d = math.fabs(float(1000 * self.static_freq[0]) - float(tmp_freq))
             dcount = 0
             for i in range(1, len(self.static_freq)):
@@ -865,7 +865,7 @@ class Vex2Ndevice:
                 # print([key.split('-')[0], use_polarized_comb[key][0]])
                 rxlist.append([key.split('-')[0], use_polarized_comb[key][2][1], tmp_freq / 1000])
 
-            num = rxlist.index([key.split('-')[0], use_polarized_comb[key][2][1], tmp_freq / 1000]) 
+            num = rxlist.index([key.split('-')[0], use_polarized_comb[key][2][1], tmp_freq / 1000])
 
 
             array_freq_rx_list[self.array_num[key] - 1] = copy.copy([key.split('-')[0], use_polarized_comb[key][2][1], tmp_freq / 1000, use_polarized_comb[key][1], num, key, use_polarized_comb[key][2], use_polarized_comb[key][3]])
@@ -873,7 +873,7 @@ class Vex2Ndevice:
         tmp_vlbi_array_freq_rx_list = []
         if self.debag:
             ut.UtilFunc.chkprint2('array_freq_rx_list[self.array_num[key] - 1]', array_freq_rx_list[self.array_num[key] - 1] )
-        
+
         for i, lists in enumerate(array_freq_rx_list):
             if not lists[4] == -1:
                 if self.debag:ut.UtilFunc.chkprint(lists)
@@ -913,8 +913,9 @@ class Vex2Ndevice:
         RESFREQを設定
         '''
 
-        restf = []
-        # ut.UtilFunc.chkprint(array_freq_rx_list)
+        # restf = []
+        if self.debag:
+            ut.UtilFunc.chkprint2('array_freq_rx_list', array_freq_rx_list)
         tmp_lis = copy.copy(array_freq_rx_list)
         for i, lis in enumerate(array_freq_rx_list):
             tmp_lis[i].append(lis[2])
@@ -969,7 +970,7 @@ class Vex2Ndevice:
         #     if lists[0] == 'H40':
         #         tmp_list[i][8] = 43.12207
         #         tmp_list[i][9] = 43.12207
-        #     # elif  lists[4] != -1: 
+        #     # elif  lists[4] != -1:
         return tmp_list
 
     def __copy_low2high(self, array_freq_rx_list):
@@ -1047,13 +1048,21 @@ class Vex2Ndevice:
                 first_LO = 'None'
             else:
                 tmp_num = lists[4] + 1
-                tmp_cent = lists[3] + lists[7] / 2
+                # tmp_cent = lists[3] + lists[7] / 2
                 first_LO = lists[2] - 6
+                if i + 1 in self.pointing_array_num.values():
+                    tmp_cent = lists[3] + lists[7] / 2
+                elif array_freq_rx_list[i][1] == 'USB':
+                    tmp_cent = lists[3] + lists[7] / 2 + 8
+                elif array_freq_rx_list[1] == 'LSB':
+                    tmp_cent = lists[3] + lists[7] / 2 - 8
+                else:
+                    tmp_cent = None
             if i + 1 in self.pointing_array_num.values():
-                print('   {0} {1:>10.10} {2:>6}  {3:>4} {4:>5} {5}'.format(ut.pycolor.RED + str(i + 1).zfill(2) + ut.pycolor.END, str(first_LO),str(lists[0]), str(lists[1]), tmp_num, str(tmp_cent)))
+                print('   {0} {1:>10.10} {2:>6}  {3:>4} {4:>5} {5}'.format(ut.pycolor.UNDERLINE + str(i + 1).zfill(2) + ut.pycolor.END, str(first_LO),str(lists[0]), str(lists[1]), tmp_num, str(tmp_cent)))
             else:
                 print('   {0} {1:>10.10} {2:>6}  {3:>4} {4:>5} {5}'.format(str(i + 1).zfill(2), str(first_LO),str(lists[0]), str(lists[1]), tmp_num, str(tmp_cent)))
-        print('(' + ut.pycolor.RED + 'Red array number' + ut.pycolor.END + ' is Pointing)')
+        print('(' + ut.pycolor.UNDERLINE + 'UNDERLINE number' + ut.pycolor.END + ' is Pointing)')
         if self.debag:
             print('------------------')
             for i, lists in enumerate(array_freq_rx_list):
@@ -1159,7 +1168,16 @@ class Vex2Ndevice:
 
         for i in range(0, 32):
             if i < len(array_freq_rx_list) and array_freq_rx_list[i][4] != -1:
-                out_data.append('RSFREQ' + str(i + 1).zfill(2) + '=' + str(Decimal(str((array_freq_rx_list[i][3] + array_freq_rx_list[i][7] / 2) * 1E-3)).quantize(Decimal('0.0000001'), rounding=ROUND_HALF_UP)))
+                # USBのとき8たしてLSBの時引く
+                if i + 1 in self.pointing_array_num.values():
+                    tmp_res = array_freq_rx_list[i][3] + array_freq_rx_list[i][7] / 2
+                elif array_freq_rx_list[i][1] == 'USB':
+                    tmp_res = array_freq_rx_list[i][3] + array_freq_rx_list[i][7] / 2 + 8
+                elif array_freq_rx_list[i][1] == 'LSB':
+                    tmp_res = array_freq_rx_list[i][3] + array_freq_rx_list[i][7] / 2 - 8
+                else:
+                    tmp_res = None
+                out_data.append('RSFREQ' + str(i + 1).zfill(2) + '=' + str(Decimal(str((tmp_res) * 1E-3)).quantize(Decimal('0.0000001'), rounding=ROUND_HALF_UP)))
             else:
                 out_data.append('RSFREQ' + str(i + 1).zfill(2) + '=')
 
@@ -1239,7 +1257,7 @@ class Vex2Ndevice:
         if self.debag:
             for key in self.result_status.keys():
                 ut.UtilFunc.chkprint2(key, self.result_status[key])
-        
+
         if all(self.result_status.values()):
             return True
         else:

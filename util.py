@@ -112,8 +112,8 @@ class UtilFunc():
             # print(pycolor.RED + "Error: " + pycolor.END, end = "")
             # print('\n       '.join(msg))
             exit()
-        
-            
+
+
 
     def print_warning_msg(e, *msg):
         if not e:
@@ -169,10 +169,11 @@ class pycolor:
     CYAN = '\033[36m'
     WHITE = '\033[37m'
     END = '\033[0m'
-    BOLD = '\038[1m'
+    BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     INVISIBLE = '\033[08m'
     REVERCE = '\033[07m'
+    BLINK = '\033[05m'
 
 if __name__ == "__main__":
     args = sys.argv
