@@ -58,15 +58,15 @@ class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
             print(ut.pycolor.RED + 'パラメータファイルの書式が間違っています。' + ut.pycolor.END)
             traceback.print_exc()
             exit()
-        
+
         if hasattr(prm, 'yes'): self.yes = prm.yes
         if hasattr(prm, 'vex_file_name'): self.vex_file_name = prm.vex_file_name
-        else: 
+        else:
             self.common_error.append('vex_file_name')
         if hasattr(prm, 'station_name'): self.station_name = prm.station_name
         if hasattr(prm, 'debag'): self.debag = prm.debag
         if hasattr(prm, 'ask_verwrite'): self.yes = prm.ask_verwrite
-        
+
 
         if len(self.common_error) >= 1:
             for error in self.common_error:
@@ -87,31 +87,31 @@ class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
             exit()
 
         if hasattr(prm, 'USER_NAME'):
-            self.USER_NAME = prm.USER_NAME 
+            self.USER_NAME = prm.USER_NAME
         else:
             self.USER_NAME = getpass.getuser()
-        if hasattr(prm, 'obs_name'): self.obs_name = prm.obs_name         
+        if hasattr(prm, 'obs_name'): self.obs_name = prm.obs_name
         if hasattr(prm, 'PROJECT_NAME'): self.PROJECT_NAME = prm.PROJECT_NAME
         if hasattr(prm, 'pointing_start_file_path'): self.pointing_start_file_path = prm.pointing_start_file_path
         if hasattr(prm, 'pointing_start_file'): self.pointing_start_file = prm.pointing_start_file
-        if hasattr(prm, 'start_time_flag'): self.start_time_flag = prm.start_time_flag 
+        if hasattr(prm, 'start_time_flag'): self.start_time_flag = prm.start_time_flag
         if self.start_time_flag == 'any_start':
             if hasattr(prm, 'any_time'):
-                self.any_time = prm.any_time 
+                self.any_time = prm.any_time
             else:
                 self.start_error.append()
         if self.start_time_flag == 'after_start':
             if hasattr(prm, 'after_day'):
                 self.after_day = prm.after_day
             if hasattr(prm, 'minute_day'):
-                self.minute_day = prm.minute_day 
+                self.minute_day = prm.minute_day
         if hasattr(prm, 'TIME_MOVE_ANTENNA'): self.TIME_MOVE_ANTENNA = prm.TIME_MOVE_ANTENNA
-        if hasattr(prm, 'after_mmc'): self.after_mmc = prm.after_mmc  
-        if hasattr(prm, 'before_observation'): self.before_observation = prm.before_observation 
+        if hasattr(prm, 'after_mmc'): self.after_mmc = prm.after_mmc
+        if hasattr(prm, 'before_observation'): self.before_observation = prm.before_observation
         if hasattr(prm, 'time_of_second_move'): self.time_of_second_move = prm.time_of_second_move
-        if hasattr(prm, 'start_file_flag'): self.start_file_flag = prm.start_file_flag 
+        if hasattr(prm, 'start_file_flag'): self.start_file_flag = prm.start_file_flag
         if hasattr(prm, 'start_file_name'): self.start_file_name = prm.start_file_name
-        if hasattr(prm, 'error_flag'): self.error_flag = prm.error_flag 
+        if hasattr(prm, 'error_flag'): self.error_flag = prm.error_flag
         if hasattr(prm, 'att'): self.att = prm.att
         if hasattr(prm, 'IFatt'):
             for key in prm.IFatt.keys():
@@ -148,7 +148,7 @@ class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
             self.pointing_start_file_path = '/cosmos3/45m/obstable' + self.USER_NAME
         if self.pointing_start_file_path[-1] != '/':
             self.pointing_start_file_path += '/'
-        
+
 
 
 
@@ -170,7 +170,7 @@ class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
             traceback.print_exc()
             exit()
 
-        if hasattr(prm, 'device_fname'): self.device_fname = prm.device_fname
+        if hasattr(prm, 'device_file_name'): self.device_fname = prm.device_file_name
         if hasattr(prm, 'device_file_flag'): self.device_file_flag = prm.device_file_flag
         if hasattr(prm, 'Observation_Name'): self.Observation_Name = prm.Observation_Name
         if hasattr(prm, 'att'): self.att = prm.att
@@ -185,7 +185,7 @@ class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
         if hasattr(prm, 'rx_conb'): self.rx_conb = prm.rx_conb
         # if hasattr(prm, ''):
 
-        
+
 
         if self.device_fname == '':
             self.device_fname = os.path.splitext(self.vex_file_name)[0] + ".ndevice"
@@ -208,7 +208,7 @@ class VexConverter(Vex2Start, Vex2Ndevice, Vex2Dat, Vex2Tune):
             exit()
 
 
-        if hasattr(prm, 'dat_filename'): self.dat_filename = prm.dat_filename
+        if hasattr(prm, 'dat_file_name'): self.dat_filename = prm.dat_file_name
         if hasattr(prm, 'dat_file_flag'): self.dat_file_flag = prm.dat_file_flag
         if hasattr(prm, 'rx_range_list'): self.rx_range_list = prm.rx_range_list
         if hasattr(prm, 'first_LO'): self.first_LO = prm.first_LO
@@ -265,7 +265,7 @@ class ReadVex():
             vex_data = open(vex_filename, "r")
             self.data_list = vex_data.readlines()
 
-            
+
             self.title_index = [len(self.data_list)]
 
             # 各$...の行数を取得
@@ -361,15 +361,15 @@ if __name__ == "__main__":
 
 
     if args.ndevice or all_flag:
-        result['get parameter(ndevice)'] = vc.get_ndevice_var() 
+        result['get parameter(ndevice)'] = vc.get_ndevice_var()
         vc.reverse_print('Convert .vex to .ndevice')
         result['Convert .vex to .ndevice'] = vc.convert_vex_to_ndevice()
     if args.dat or all_flag:
         if not args.ndevice and not all_flag:
-            result['get parameter(ndevice)'] = vc.get_ndevice_var()      
+            result['get parameter(ndevice)'] = vc.get_ndevice_var()
             vc.device_file_flag = False
             vc.reverse_print('Convert .vex to .ndevice')
-            result['Convert .vex to .ndevice'] = vc.convert_vex_to_ndevice()      
+            result['Convert .vex to .ndevice'] = vc.convert_vex_to_ndevice()
         result['get parameter(dat)'] = vc.get_dat_var()
         vc.reverse_print('Convert .vex to .dat')
         result['Convert .vex to .dat'] = vc.convert_vex_to_dat()
