@@ -25,7 +25,7 @@
 start_time_flag = 'original_start'
 
 # 任意の時間で観測を開始する場合に使用
-# start_time_flag = 'any_start'    
+# start_time_flag = 'any_start'
 # any_time = '2018y075d08h00m00s'    # 観測開始時間
 
 # 現時刻から指定の時間後に観測する場合に使用

@@ -27,7 +27,7 @@ Python3 vex_concerter.py [オプション]
 |.start       | `-s`                     |
 |.ndevice     | `-n`                     |
 |.dat         | `-d`                     |
-|~~.tune~~    |~~ `-t`~~                 |
+|~~.tune~~    |~~ -t~~                 |
 
 これらのキーワードは複数同時に使うこともでき、例えば.startと.deviceを同時に変換したい場合は次のようにする。  
 ```
@@ -104,7 +104,9 @@ vexファイルから変換する際に、.start、.device、.datについては
 |dat_filename     |datファイルの名前|vexファイルと同じ||
 |dat_file_flag    |datファイルを書き出すかどうか|True||
 |tune_file_name   |tuneファイルの名前|vexファイルと同じ||
-|tune_file_flag   |tuneファイルを書き出すかどうか|True||
+|tune_file_flag   |tuneファイルを書き出すかどうか|True||  
+
+
 *b: `start_file_flag`について  
     `start_file_flag`を`file_selected`にした場合は`start_file_name`で書き出すファイル名を指定する必要がある。（ただし、設定しなかった場合は観測コード名.startで作成される）
 

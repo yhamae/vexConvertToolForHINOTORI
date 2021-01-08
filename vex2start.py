@@ -1277,10 +1277,18 @@ class Vex2Start():
 
                     right_ascension = float(SOURCE_LIST[SOURCE_NUMBER][1][0:2]) * 15 + float(SOURCE_LIST[SOURCE_NUMBER][1][3:5]) * (15/60.0) + float(SOURCE_LIST[SOURCE_NUMBER][1][6:8]) * (15/3600.0) + 0.01 * float(SOURCE_LIST[SOURCE_NUMBER][1][9:11]) * (15/3600.0)
 
-                    if SOURCE_LIST[SOURCE_NUMBER][2][0] == "+" or SOURCE_LIST[SOURCE_NUMBER][2][0] == "-":
+                    #if SOURCE_LIST[SOURCE_NUMBER][2][0] == "+" or SOURCE_LIST[SOURCE_NUMBER][2][0] == "-":
+                    #    declination = float(SOURCE_LIST[SOURCE_NUMBER][2][0:3]) + float(SOURCE_LIST[SOURCE_NUMBER][2][4:6]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][7:11]) / 3600.0
+                    #else:
+                    #    declination = float(SOURCE_LIST[SOURCE_NUMBER][2][0:2]) + float(SOURCE_LIST[SOURCE_NUMBER][2][3:5]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][6:10]) / 3600.0
+
+                    if SOURCE_LIST[SOURCE_NUMBER][2][0] == "-":
+                        declination = -1.0*(float(SOURCE_LIST[SOURCE_NUMBER][2][1:3]) + float(SOURCE_LIST[SOURCE_NUMBER][2][4:6]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][7:11]) / 3600.0)
+                    elif SOURCE_LIST[SOURCE_NUMBER][2][0] == "+":
                         declination = float(SOURCE_LIST[SOURCE_NUMBER][2][0:3]) + float(SOURCE_LIST[SOURCE_NUMBER][2][4:6]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][7:11]) / 3600.0
                     else:
                         declination = float(SOURCE_LIST[SOURCE_NUMBER][2][0:2]) + float(SOURCE_LIST[SOURCE_NUMBER][2][3:5]) / 60.0 + float(SOURCE_LIST[SOURCE_NUMBER][2][6:10]) / 3600.0
+
 
                     #ファイル書き込み部
                     self.startfile.append("SET GRPTRK SRC_NAME \'" + SOURCE_LIST[SOURCE_NUMBER][0] + "\'")
