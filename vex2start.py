@@ -7,14 +7,20 @@
 #           Yuki Hamae
 # Update  : Oct, 2020
 #           Beta版リリース
+# Update  : Aug, 2021
+#           $IFを読み込んで1st local frequency を参考にする
+#           Center IF frequency を6 GHzに固定する
+#           Hiroshi Imai
 
 import datetime
 import sys
 import os
 
+import re
+import math
+import copy
+
 import util as ut
-
-
 
 
 class Vex2Start():
@@ -199,8 +205,6 @@ class Vex2Start():
                     SOURCE_LIST[i].append(''.join(data.split())[16:])
 
 
-
-
         #-------------------------------------------------#
         #  FREQ
         #-------------------------------------------------#
@@ -223,6 +227,30 @@ class Vex2Start():
                 #print data.split()[5], "=", data.split()[6], "MHz"
                 #print data.split()[8], "=", data.split()[10], data.split()[12], data.split()[13]
                 pass
+
+        #-------------------------------------------------#
+        #   IF  
+        #-------------------------------------------------#
+        #$IFを分解する。
+        IF_INDEX_START = 0
+        IF_INDEX_END = 0
+        for data in self.datalist:
+            if data.strip() in "$IF;":
+                IF_INDEX_START = self.datalist.index(data)
+                IF_INDEX_END = title_index[title_index.index(IF_INDEX_START)+1]
+        #print( IF_INDEX_START, IF_INDEX_END )
+        IF_DATA = self.datalist[IF_INDEX_START:IF_INDEX_END]
+        #print IF_DATA  #この中に$IF;の中身が書いてある。
+
+        for data in IF_DATA:
+            #1st local 周波数
+            if "if_def" in data.split():
+                #print (data.split()[2],  data.split()[4], data.split()[6], data.split()[8], data.split()[11])
+                pass
+
+        #vex2ndevice.pyで読み込んだ self.rxlistの中身が使える。
+        #vex fileに書かれた1st Lo freq. + 6 GHz = center freq.が記録されている。
+        #print( self.rxlist )
 
 
         #-------------------------------------------------#
@@ -441,12 +469,121 @@ class Vex2Start():
         #  write title
         #-------------------------------------------------#
         scan = 0
-        SOURCE_NAME_SAMPLE = SCHED_LIST[scan][2]
+        #SOURCE_NAME_SAMPLE = SCHED_LIST[scan][2]
+
+        # Source for system tuning
+        scan_tuning = 0 
+        n_skip = 0
+
+        counter = 0
+        #SCHEDの名前からSOURCEを探索
+        for scan in range(len(SCHED_Start_index)):
+
+            #------------------------------#
+            #---------- any time ----------#
+            #------------------------------#
+            if self.start_time_flag == "any_start":
+                if scan == 0:
+                    start_offset_time = ut.UtilFunc.str_time_to_time(self.any_time)
+                    start_offset_time = datetime.datetime(int(start_offset_time[0]), int(start_offset_time[1]), int(start_offset_time[2]), int(start_offset_time[3]), int(start_offset_time[4]), int(start_offset_time[5]))
+                    start_offset_time = start_offset_time + datetime.timedelta(hours=9)
+                    critetia_time = start_offset_time
+
+                offset_time = SCHED_LIST[scan][0]
+                start_offset_time = ut.UtilFunc.str_time_to_time(offset_time)
+                start_offset_time = datetime.datetime(int(start_offset_time[0]), int(start_offset_time[1]), int(start_offset_time[2]), int(start_offset_time[3]), int(start_offset_time[4]), int(start_offset_time[5]))
+                start_offset_time = start_offset_time + datetime.timedelta(hours=9)
+                end_offset_time = end_offset_time + datetime.timedelta(seconds=self.time_of_second_move)
+
+                if ut.UtilFunc.time_plus_or_minus(critetia_time, start_offset_time) > 0:
+                    n_skip+= 1
+                    continue
+                else:
+                    counter += 1
+                WAIT_MMC_TIME = 0
+                #print MODE_LIST
+                for m in MODE_LIST:
+                    if SCHED_LIST[scan][1] == m[0]:
+                        for p in PROCEDURES_LIST:
+                            if m[1] == p[0]:
+                                WAIT_MMC_TIME = int(p[1])
+
+
+                #observation start time
+                if WAIT_MMC_TIME > 0:
+                    OBSERVATION_BEFORE_TIME = start_offset_time - datetime.timedelta(seconds=self.before_observation+WAIT_MMC_TIME+self.after_mmc)
+                else:
+                    OBSERVATION_BEFORE_TIME = start_offset_time - datetime.timedelta(seconds=self.before_observation)
+
+                #時間のERROR判定
+                if (ut.UtilFunc.time_plus_or_minus(OBSERVATION_BEFORE_TIME, end_offset_time) > 0):
+                    pass
+                else:
+                    if WAIT_MMC_TIME > 0:
+                        OBSERVATION_BEFORE_TIME = start_offset_time - datetime.timedelta(seconds=WAIT_MMC_TIME+self.after_mmc)
+                    else:
+                        OBSERVATION_BEFORE_TIME = start_offset_time
+
+                    if (ut.UtilFunc.time_plus_or_minus(OBSERVATION_BEFORE_TIME, end_offset_time) > 0):
+                        pass
+                    else:
+                        n_skip+= 1
+
+            #------------------------------#
+            #---------- after time ----------#
+            #------------------------------#
+            if self.start_time_flag == "after_start":
+                if scan == 0:
+                    start_offset_time = datetime.datetime.today() + datetime.timedelta(days=self.after_day, hours=self.after_hours, minutes=self.minute_minutes)
+                    critetia_time = start_offset_time
+
+                offset_time = SCHED_LIST[scan][0]
+                start_offset_time = ut.UtilFunc.str_time_to_time(offset_time)
+                start_offset_time = datetime.datetime(int(start_offset_time[0]), int(start_offset_time[1]), int(start_offset_time[2]), int(start_offset_time[3]), int(start_offset_time[4]), int(start_offset_time[5]))
+                start_offset_time = start_offset_time + datetime.timedelta(hours=9)
+                end_offset_time = end_offset_time + datetime.timedelta(seconds=self.time_of_second_move)
+
+                counter = 0
+                if ut.UtilFunc.time_plus_or_minus(critetia_time, start_offset_time) > 0:
+                    n_skip+= 1
+                else:
+                    counter += 1
+
+                WAIT_MMC_TIME = 0
+                #print MODE_LIST
+                for m in MODE_LIST:
+                    if SCHED_LIST[scan][1] == m[0]:
+                        for p in PROCEDURES_LIST:
+                            if m[1] == p[0]:
+                                WAIT_MMC_TIME = int(p[1])
+
+                #observation start time
+                if WAIT_MMC_TIME > 0:
+                    OBSERVATION_BEFORE_TIME = start_offset_time - datetime.timedelta(seconds=self.before_observation+WAIT_MMC_TIME+self.after_mmc)
+                else:
+                    OBSERVATION_BEFORE_TIME = start_offset_time - datetime.timedelta(seconds=self.before_observation)
+
+                #時間のERROR判定
+                if (ut.UtilFunc.time_plus_or_minus(OBSERVATION_BEFORE_TIME, end_offset_time) > 0):
+                    pass
+                else:
+                    if WAIT_MMC_TIME > 0:
+                        OBSERVATION_BEFORE_TIME = start_offset_time - datetime.timedelta(seconds=WAIT_MMC_TIME+self.after_mmc)
+                    else:
+                        OBSERVATION_BEFORE_TIME = start_offset_time
+
+                    if (ut.UtilFunc.time_plus_or_minus(OBSERVATION_BEFORE_TIME, end_offset_time) > 0):
+                        pass
+                    else:
+                        n_skip+= 1
+
+        scan_tuning+= n_skip
+        SOURCE_NAME_SAMPLE = SCHED_LIST[scan_tuning][2]
 
         for i in range(len(SOURCE_LIST)):
             if SOURCE_NAME_SAMPLE == SOURCE_LIST[i][0]:
                 SOURCE_NUMBER = i
-        SOURCE_NUMBER = 0
+        #SOURCE_NUMBER = 0
         right_ascension = float(SOURCE_LIST[SOURCE_NUMBER][1][0:2]) * 15 + float(SOURCE_LIST[SOURCE_NUMBER][1][3:5]) * (15/60.0) + float(SOURCE_LIST[SOURCE_NUMBER][1][6:8]) * (15/3600.0) + 0.01 * float(SOURCE_LIST[SOURCE_NUMBER][1][9:11]) * (15/3600.0)
 
 #        if SOURCE_LIST[SOURCE_NUMBER][2][0] == "+" or SOURCE_LIST[SOURCE_NUMBER][2][0] == "-":
@@ -651,8 +788,6 @@ class Vex2Start():
         self.startfile.append('###########################')
         
 
-
-
         self.startfile.append('SET GRPTRK TRK_TYPE \'RADEC\'')
         self.startfile.append('SET GRPTRK SRC_NAME \'' + SOURCE_LIST[SOURCE_NUMBER][0] + '\'')
         self.startfile.append('SET GRPTRK SRC_POS ( %.5f, %.5f)' %(right_ascension, declination))
@@ -680,7 +815,23 @@ class Vex2Start():
         self.startfile.append('SET SYNTHE_L VREF \'LSR\'')
         self.startfile.append('SET SYNTHE_L INTERVAL 600')
         self.startfile.append('SET SYNTHE_L DOPPLER_TRK \'OFF\'')
-        self.startfile.append('SET SYNTHE_L OBS_FREQ 2.28E10')
+
+        # Output the obs. freq (1st local freq.(in vex) + 6 GHz)
+
+        mode_bindex, mode_eindex, FreqMode, IFMode, BBCMode = Vex2Start.__read_mode(self)
+        IF_comb                                             = Vex2Start.__read_if(self, IFMode)
+        #print('IF_comb =',IF_comb)
+
+        for  s in IF_comb:
+            #print ( IF_comb[s][0] )
+            freq = IF_comb[s][0]
+            print(freq)
+            if 1.3e4 < freq < 2.5e4: freq_L = (freq + 6.0e3)/1.0e4
+            if 3.3e4 < freq < 4.5e4: freq_K = (freq + 6.0e3)/1.0e4
+        #print( freq_L, freq_K )
+            
+        #self.startfile.append('SET SYNTHE_L OBS_FREQ 2.28E10')
+        self.startfile.append('SET SYNTHE_L OBS_FREQ ' + str(freq_L) + 'E10')
         self.startfile.append('SET SYNTHE_L FREQ_IF1 6.0E9')
         self.startfile.append('SET SYNTHE_L FREQ_SW \'OFF\'')
         self.startfile.append('SET SYNTHE_L FREQ_INTVAL 0.0')
@@ -697,7 +848,9 @@ class Vex2Start():
         self.startfile.append('SET SYNTHE_K VREF \'LSR\'')
         self.startfile.append('SET SYNTHE_K INTERVAL 600')
         self.startfile.append('SET SYNTHE_K DOPPLER_TRK \'OFF\'')
-        self.startfile.append('SET SYNTHE_K OBS_FREQ 4.32E10')
+        #self.startfile.append('SET SYNTHE_K OBS_FREQ 4.32E10')
+        #self.startfile.append('SET SYNTHE_K OBS_FREQ 4.3207E10')
+        self.startfile.append('SET SYNTHE_L OBS_FREQ ' + str(freq_K) + 'E10')
         self.startfile.append('SET SYNTHE_K FREQ_IF1 6.0E9')
         self.startfile.append('SET SYNTHE_K FREQ_SW \'OFF\'')
         self.startfile.append('SET SYNTHE_K FREQ_INTVAL 0.0')
@@ -757,7 +910,7 @@ class Vex2Start():
         self.startfile.append('####################')
         self.startfile.append('# Set IF Parameters #')
         self.startfile.append('#####################')
-        self.startfile.append('SET IFATT DESTINATION ‘SAM45’')
+        self.startfile.append('SET IFATT DESTINATION \'SAM45\'')
         if self.startfile_mode['pointing']:
             self.startfile.append('#####################')
             self.startfile.append('# Set IF Parameters #')
@@ -910,9 +1063,6 @@ class Vex2Start():
 
 
 
-
-
-
         self.startfile.append('#############################')
         self.startfile.append('# Initialize MMC Parameters #')
         self.startfile.append('#############################')
@@ -928,6 +1078,7 @@ class Vex2Start():
         self.startfile.append('EXECUTE SYNTHE OFFSET(0.000000,0.000000) TYPE(ZERO)')
         self.startfile.append('EXECUTE ANT OFFSET(0.050000,0.000000) TYPE(ZERO)')
         self.startfile.append('WAIT_READY ANT')
+        self.startfile.append('INTERRUPT ANT SYNTHE')
         # self.startfile.append('WAIT RXT')
         # if self.startfile_mode['pointing']:
         # self.startfile.append('EXECUTE SAM45 ACTION(CREATE)')
@@ -1141,7 +1292,8 @@ class Vex2Start():
                     self.startfile.append("EXECUTE ANT OFFSET(0,0) TIME_RANGE(%04d/%02d/%02d %02d:%02d:%02d - %04d/%02d/%02d %02d:%02d:%02d) TYPE(ON)\n" %(CURRENT_TIME.year, CURRENT_TIME.month, CURRENT_TIME.day, CURRENT_TIME.hour, CURRENT_TIME.minute, CURRENT_TIME.second, OBSERVATION_BEFORE_TIME.year, OBSERVATION_BEFORE_TIME.month, OBSERVATION_BEFORE_TIME.day, OBSERVATION_BEFORE_TIME.hour, OBSERVATION_BEFORE_TIME.minute, OBSERVATION_BEFORE_TIME.second))
 
                     CURRENT_TIME = OBSERVATION_BEFORE_TIME
-                    self.startfile.append("WAIT_READY ANT")
+                    #self.startfile.append("WAIT_READY ANT")
+                    self.startfile.append("WAIT ANT")
 
 
                     if WAIT_MMC_TIME > 0:
@@ -1151,7 +1303,8 @@ class Vex2Start():
 
                         CURRENT_TIME = NEXT_TIME + datetime.timedelta(seconds=self.after_mmc)
                         #end_offset_time = CURRENT_TIME + datetime.timedelta(seconds=end_sec+30)
-                        self.startfile.append("WAIT_READY ANT")
+                        #self.startfile.append("WAIT_READY ANT")
+                        self.startfile.append("WAIT ANT")
                         self.startfile.append("WAIT MMC")
                         self.startfile.append("EXECUTE MMC CMD(MOP)")
                         self.startfile.append("WAIT MMC")
@@ -1303,7 +1456,8 @@ class Vex2Start():
                     self.startfile.append("EXECUTE ANT OFFSET(0,0) TIME_RANGE(%04d/%02d/%02d %02d:%02d:%02d - %04d/%02d/%02d %02d:%02d:%02d) TYPE(ON)\n" %(CURRENT_TIME.year, CURRENT_TIME.month, CURRENT_TIME.day, CURRENT_TIME.hour, CURRENT_TIME.minute, CURRENT_TIME.second, OBSERVATION_BEFORE_TIME.year, OBSERVATION_BEFORE_TIME.month, OBSERVATION_BEFORE_TIME.day, OBSERVATION_BEFORE_TIME.hour, OBSERVATION_BEFORE_TIME.minute, OBSERVATION_BEFORE_TIME.second))
 
                     CURRENT_TIME = OBSERVATION_BEFORE_TIME
-                    self.startfile.append("WAIT_READY ANT")
+                    #self.startfile.append("WAIT_READY ANT")
+                    self.startfile.append("WAIT ANT")
 
 
                     if WAIT_MMC_TIME > 0:
@@ -1313,7 +1467,8 @@ class Vex2Start():
 
                         CURRENT_TIME = NEXT_TIME + datetime.timedelta(seconds=self.after_mmc)
                         #end_offset_time = CURRENT_TIME + datetime.timedelta(seconds=end_sec+30)
-                        self.startfile.append("WAIT_READY ANT")
+                        #self.startfile.append("WAIT_READY ANT")
+                        self.startfile.append("WAIT ANT")
                         self.startfile.append("WAIT MMC")
                         self.startfile.append("EXECUTE MMC CMD(MOP)")
                         self.startfile.append("WAIT MMC")
@@ -1461,7 +1616,8 @@ class Vex2Start():
                     self.startfile.append("EXECUTE ANT OFFSET(0,0) TIME_RANGE(%04d/%02d/%02d %02d:%02d:%02d - %04d/%02d/%02d %02d:%02d:%02d) TYPE(ON)\n" %(CURRENT_TIME.year, CURRENT_TIME.month, CURRENT_TIME.day, CURRENT_TIME.hour, CURRENT_TIME.minute, CURRENT_TIME.second, OBSERVATION_BEFORE_TIME.year, OBSERVATION_BEFORE_TIME.month, OBSERVATION_BEFORE_TIME.day, OBSERVATION_BEFORE_TIME.hour, OBSERVATION_BEFORE_TIME.minute, OBSERVATION_BEFORE_TIME.second))
 
                     CURRENT_TIME = OBSERVATION_BEFORE_TIME
-                    self.startfile.append("WAIT_READY ANT")
+                    #self.startfile.append("WAIT_READY ANT")
+                    self.startfile.append("WAIT ANT")
 
 
                     if WAIT_MMC_TIME > 0:
@@ -1471,7 +1627,8 @@ class Vex2Start():
 
                         CURRENT_TIME = NEXT_TIME + datetime.timedelta(seconds=self.after_mmc)
                         #end_offset_time = CURRENT_TIME + datetime.timedelta(seconds=end_sec+30)
-                        self.startfile.append("WAIT_READY ANT")
+                        #self.startfile.append("WAIT_READY ANT")
+                        self.startfile.append("WAIT ANT")
                         self.startfile.append("WAIT MMC")
                         self.startfile.append("EXECUTE MMC CMD(MOP)")
                         self.startfile.append("WAIT MMC")
@@ -1511,6 +1668,100 @@ class Vex2Start():
         print(".START FILE NAME       : " + self.start_file_name)
 
         return True
+
+
+    def __read_mode(self):
+        '''
+        $MODEを読み、指定された望遠鏡で使用するFREQ, IF, BBCのモードを取得
+        '''
+
+        MODE_DATA  = self.vexdata['MODE']
+
+        FreqMode = {}
+        IFMode = {}
+        BBCMode = {}
+
+        # count = 0
+        mode_bindex = []
+        mode_eindex = []
+        for i in range(len(MODE_DATA)):
+            data = MODE_DATA[i]
+            if "def" == data.split("*")[0].strip()[0:3]:
+                mode_bindex.append(i)
+                ModeName = data.split()[1].strip(';')
+                j = i + 1
+                while True:
+                    data = MODE_DATA[j].split('*')[0]
+
+                    if "ref" == data.split("*")[0].strip()[0:3]:
+                        if "$FREQ" == data.split("*")[0].split()[1] and self.station_name in data:
+                            tmp = data.split(":")[0]
+
+                            FreqMode[ModeName] = tmp.split("=")[1].strip()
+                        if "$IF" == data.split("*")[0].split()[1] and self.station_name in data:
+                            tmp = data.split(":")[0]
+                            IFMode[ModeName] = tmp.split("=")[1].strip()
+                        if "$BBC" == data.split("*")[0].split()[1] and self.station_name in data:
+                            tmp = data.split(":")[0]
+                            BBCMode[ModeName] = tmp.split("=")[1].strip()
+
+                    if "enddef" == data.split("*")[0].strip()[0:6]:
+                        mode_eindex.append(j)
+
+                        break
+                    j += 1
+
+            # elif "enddef" == data.strip()[0:6]:
+            #     mode_eindex.append(count)
+            # count += 1
+
+        if self.debag:
+            ut.UtilFunc.chkprint(FreqMode)
+            ut.UtilFunc.chkprint(IFMode)
+            ut.UtilFunc.chkprint(BBCMode)
+
+        mode_bindex.sort()
+        mode_eindex.sort()
+
+        return mode_bindex, mode_eindex, FreqMode, IFMode, BBCMode
+
+    def __read_if(self, IFMode):
+        '''
+        $IFを読む
+        '''
+
+        IF_DATA = self.vexdata['IF']
+
+        IF_val = []
+        IF_sb = []
+        IF_comb = {}
+        for i in range(len(IF_DATA)):
+            if "def" == IF_DATA[i].strip()[0:3] and IF_DATA[i].split()[1].split(';')[0] in IFMode.values():
+                j = i + 1
+                while j < len(IF_DATA) - 1 and "enddef" != IF_DATA[j].strip()[0:6]:
+
+                    if "if_def" == IF_DATA[j].split("*")[0].strip()[0:6]:
+
+                        try:
+                            IF_val.append(float(IF_DATA[j].split(':')[3].strip("MHz"" ")))
+                            if self.debag:
+                                ut.UtilFunc.chkprint(IF_DATA[j].split(':')[3].strip("MHz"" "))
+                                ut.UtilFunc.chkprint(re.split('[=:;]', IF_DATA[j]))
+                            IF_sb.append(IF_DATA[j].split(':')[4].strip() + "SB")
+
+                            IF_comb[re.split('[=:;]', IF_DATA[j])[1].strip(' ''&')] = [float(re.split('[=:;]', IF_DATA[j])[4].strip(' ''&''MHz')), re.split('[=:;]', IF_DATA[j])[5].strip(' ''&') + 'SB']
+                        except IndexError as e:
+                            ut.UtilFunc.print_err_msg(True, e, "L.O.の設定を正しく読み込めませんでした", "$IFセクションを確認してください")
+
+                    j += 1
+        #print('IF_comb =',IF_comb)
+
+
+        if self.debag:
+            ut.UtilFunc.chkprint(IF_val)
+            ut.UtilFunc.chkprint(IF_comb)
+
+        return IF_comb
 
 
 
