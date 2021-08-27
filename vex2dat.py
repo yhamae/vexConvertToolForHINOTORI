@@ -47,7 +47,7 @@ class Vex2Dat():
 
 
     def cal_2nd_LO_freq(self, obs_center, rx_freq, side_band2, pflag = False):
-      # USBの場合LOの周波数増やすとピークは周波数低い方向にしふと
+      # USBの場合LOの周波数増やすとピークは周波数低い方向にシフト
         if not pflag:
             sign = 1
         else:
