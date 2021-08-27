@@ -4,6 +4,8 @@
 #           Yuki Hamae
 # Update  : Oct, 2020
 #           Beta版リリース
+# Revised : Mar, 2021
+#           Frequency setup of H40/Z45 1st local
 
 import re
 import math
@@ -35,7 +37,9 @@ class Vex2Ndevice:
         self.array_list = [[None,None,None, None, -1, None, None, None, None]] * self.max_array_leng
         # [受信機名, SideBand, 静止周波数, vexファイルに記載された周波数, 受信機のindex, 受信機名（詳細）, L.O.の設定, 帯域幅(MHz)]
         # self.rx_inf = {"H22": 22.800, "H40": 43.2, "Z45": 43.2, "TZ2": 87.72}
-        self.rx_inf = {"H22": 22.800, "H40": 43.2, "Z45": 43.2, "TZ2": 87.654}
+        #self.rx_inf = {"H22": 22.800, "H40": 43.2, "Z45": 43.2, "TZ2": 87.654}
+        #Modified by H. Imai on 2021/03/21
+        self.rx_inf = {"H22": 22.800, "H40": 43.207, "Z45": 43.207, "TZ2": 87.654}
         self.polarized_inf = {"H22R": ["H22Rcp"],
                               "H22L": ["H22Lcp"],
                               "H40": ["H40Lcp"],
@@ -383,6 +387,7 @@ class Vex2Ndevice:
                             ut.UtilFunc.print_err_msg(True, e, "L.O.の設定を正しく読み込めませんでした", "$IFセクションを確認してください")
 
                     j += 1
+        #print('IF_comb =',IF_comb)
 
 
         if self.debag:
@@ -1024,7 +1029,7 @@ class Vex2Ndevice:
 
 
         # def __print_array_list(array_freq_rx_list, rxlist, 'VLBI'):
-        print(ut.pycolor.UNDERLINE + "Freqency Setting for " + 'VLBI' + ut.pycolor.END)
+        print(ut.pycolor.UNDERLINE + "Frequency setting for " + 'VLBI' + ut.pycolor.END)
         if self.debag:
             ut.UtilFunc.chkprint(array_freq_rx_list)
             ut.UtilFunc.chkprint(rxlist)
@@ -1049,7 +1054,10 @@ class Vex2Ndevice:
             else:
                 tmp_num = lists[4] + 1
                 # tmp_cent = lists[3] + lists[7] / 2
-                first_LO = lists[2] - 6
+                if array_freq_rx_list[i][1] == 'USB':
+                    first_LO = lists[2] - 6
+                if array_freq_rx_list[i][1] == 'LSB':
+                    first_LO = lists[2] + 6
                 if i + 1 in self.pointing_array_num.values():
                     tmp_cent = lists[3] + lists[7] / 2
                 elif array_freq_rx_list[i][1] == 'USB':
