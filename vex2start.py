@@ -825,7 +825,7 @@ class Vex2Start():
         for  s in IF_comb:
             #print ( IF_comb[s][0] )
             freq = IF_comb[s][0]
-            print(freq)
+            #print(freq)
             if 1.3e4 < freq < 2.5e4: freq_L = (freq + 6.0e3)/1.0e4
             if 3.3e4 < freq < 4.5e4: freq_K = (freq + 6.0e3)/1.0e4
         #print( freq_L, freq_K )
