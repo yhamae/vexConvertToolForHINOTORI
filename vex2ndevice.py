@@ -6,6 +6,11 @@
 #           Beta版リリース
 # Revised : Mar, 2021
 #           Frequency setup of H40/Z45 1st local
+# Update  : Aug, 2021
+#           $IFを読み込んで1st local frequency を参考にする
+#           Center IF frequency を6 GHzに固定する
+#           Hiroshi Imai
+
 
 import re
 import math
@@ -1109,10 +1114,28 @@ class Vex2Ndevice:
         # TRFREQ
         # print(comb_rx_freq)
         # print(rxlist)
+
+        # Output the obs. freq (1st local freq.(in vex) + 6 GHz)
+
+        mode_bindex, mode_eindex, FreqMode, IFMode, BBCMode = Vex2Ndevice.__read_mode(self)
+        IF_comb                                             = Vex2Ndevice.__read_if(self, IFMode)
+        #print('IF_comb =',IF_comb)
+
+        trfreq = []
+        for  s in IF_comb:
+            #print ( IF_comb[s][0] )
+            freq = IF_comb[s][0]
+            sideband = IF_comb[s][1]
+            if sideband == 'USB':
+                 trfreq.append(freq/1e3 + 6.0)
+            else:
+                 trfreq.append(freq/1e3 - 6.0)
+        #print(trfreq)
+
         for i in range(0, 8):
             if i < len(rxlist):
-                # out_data.append('TRFREQ' + str(i + 1).zfill(2) + '=' + str(self.rx_inf[comb_rx_freq[rxlist[i][0]]]))
-                out_data.append('TRFREQ' + str(i + 1).zfill(2) + '=' + str(self.rx_inf[comb_rx_freq[rxlist[i][0]]]))
+                #out_data.append('TRFREQ' + str(i + 1).zfill(2) + '=' + str(self.rx_inf[comb_rx_freq[rxlist[i][0]]]))
+                out_data.append('TRFREQ' + str(i + 1).zfill(2) + '=' + str(trfreq[i]))
             else:
                 out_data.append('TRFREQ' + str(i + 1).zfill(2) + '=')
 
