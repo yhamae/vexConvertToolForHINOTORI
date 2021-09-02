@@ -7,7 +7,7 @@
 #           Yuki Hamae
 # Update  : Oct, 2020
 #           Beta版リリース
-# Update  : Aug, 2021
+# Update  : Sep, 2021
 #           $IFを読み込んで1st local frequency を参考にする
 #           Center IF frequency を6 GHzに固定する
 #           Hiroshi Imai
@@ -850,7 +850,7 @@ class Vex2Start():
         self.startfile.append('SET SYNTHE_K DOPPLER_TRK \'OFF\'')
         #self.startfile.append('SET SYNTHE_K OBS_FREQ 4.32E10')
         #self.startfile.append('SET SYNTHE_K OBS_FREQ 4.3207E10')
-        self.startfile.append('SET SYNTHE_L OBS_FREQ ' + str(freq_K) + 'E10')
+        self.startfile.append('SET SYNTHE_K OBS_FREQ ' + str(freq_K) + 'E10')
         self.startfile.append('SET SYNTHE_K FREQ_IF1 6.0E9')
         self.startfile.append('SET SYNTHE_K FREQ_SW \'OFF\'')
         self.startfile.append('SET SYNTHE_K FREQ_INTVAL 0.0')
